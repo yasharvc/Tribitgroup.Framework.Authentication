@@ -14,6 +14,8 @@ namespace Tribitgroup.Framewok.Identity.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.InjectIdentityDependencies();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
