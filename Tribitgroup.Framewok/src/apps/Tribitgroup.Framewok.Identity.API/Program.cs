@@ -1,4 +1,6 @@
 
+using Tribitgroup.Framewok.Shared.Interfaces;
+
 namespace Tribitgroup.Framewok.Identity.API
 {
     public class Program
@@ -14,6 +16,10 @@ namespace Tribitgroup.Framewok.Identity.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddScoped<IScheduler>(sp => new TaskDelayScheduler(sp));
+
+            builder.InjectIdentityDependencies();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -25,7 +31,10 @@ namespace Tribitgroup.Framewok.Identity.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+
 
 
             app.MapControllers();
