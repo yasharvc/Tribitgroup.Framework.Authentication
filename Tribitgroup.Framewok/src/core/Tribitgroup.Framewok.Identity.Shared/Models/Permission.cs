@@ -1,6 +1,6 @@
 ﻿namespace Tribitgroup.Framewok.Identity.Shared.Models
 {
-    public class Permission
+    public record Permission(Guid Id, string Name)
     {
     }
 }

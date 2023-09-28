@@ -17,7 +17,8 @@ namespace Tribitgroup.Framewok.Identity
 
         public static WebApplicationBuilder InjectIdentityDependencies(this WebApplicationBuilder builder)
         {
-            var config = builder.Configuration.GetValue<JwtSetting>(nameof(JwtSetting)) ?? new JwtSetting();
+            var config = new JwtSetting();
+            builder.Configuration.GetSection(nameof(JwtSetting)).Bind(config, c => c.BindNonPublicProperties = true);
             builder.Services.InjectIdentityDependencies(config);
 
             return builder;
