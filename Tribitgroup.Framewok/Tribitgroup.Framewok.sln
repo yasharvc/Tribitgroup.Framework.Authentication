@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1CADFD56-F23F-4A8B-A4A5-C3A7B9983A29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{04BDBA8D-826A-44F6-8E7E-68A253908FAB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{CE7C692C-CA60-40BC-9081-2DB0CAA936BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{18CC7602-5704-41A3-892B-CE6C4953522F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framewok.Identity", "src\core\Tribitgroup.Framewok.Identity\Tribitgroup.Framewok.Identity.csproj", "{A99EBD09-2DEE-4E68-8957-D8FE940C2EAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framewok.Shared", "src\core\Tribitgroup.Framewok.Shared\Tribitgroup.Framewok.Shared.csproj", "{40DAD6FD-2250-428D-BAE0-231F8A687659}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framewok.Identity.API", "src\apps\Tribitgroup.Framewok.Identity.API\Tribitgroup.Framewok.Identity.API.csproj", "{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A99EBD09-2DEE-4E68-8957-D8FE940C2EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A99EBD09-2DEE-4E68-8957-D8FE940C2EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A99EBD09-2DEE-4E68-8957-D8FE940C2EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A99EBD09-2DEE-4E68-8957-D8FE940C2EAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40DAD6FD-2250-428D-BAE0-231F8A687659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40DAD6FD-2250-428D-BAE0-231F8A687659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40DAD6FD-2250-428D-BAE0-231F8A687659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40DAD6FD-2250-428D-BAE0-231F8A687659}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{04BDBA8D-826A-44F6-8E7E-68A253908FAB} = {1CADFD56-F23F-4A8B-A4A5-C3A7B9983A29}
+		{CE7C692C-CA60-40BC-9081-2DB0CAA936BD} = {1CADFD56-F23F-4A8B-A4A5-C3A7B9983A29}
+		{A99EBD09-2DEE-4E68-8957-D8FE940C2EAF} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
+		{40DAD6FD-2250-428D-BAE0-231F8A687659} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
+		{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC} = {CE7C692C-CA60-40BC-9081-2DB0CAA936BD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {71091628-2E7E-4C66-8215-8DA5776EAA26}
+	EndGlobalSection
+EndGlobal
