@@ -125,6 +125,21 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationPermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApplicationPermission");
+                });
+
             modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -219,6 +234,27 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.UserPermission<Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser, Tribitgroup.Framewok.Identity.Shared.Models.ApplicationPermission>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplicationPermissionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationPermissionId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("UserPermissions");
+                });
+
             modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.UserRefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -300,6 +336,25 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.UserPermission<Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser, Tribitgroup.Framewok.Identity.Shared.Models.ApplicationPermission>", b =>
+                {
+                    b.HasOne("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationPermission", "ApplicationPermission")
+                        .WithMany()
+                        .HasForeignKey("ApplicationPermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Permissions")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationPermission");
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.UserRefreshToken", b =>
                 {
                     b.HasOne("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser", null)
@@ -311,6 +366,8 @@ namespace Tribitgroup.Framewok.Identity.Migrations
 
             modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Permissions");
+
                     b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618

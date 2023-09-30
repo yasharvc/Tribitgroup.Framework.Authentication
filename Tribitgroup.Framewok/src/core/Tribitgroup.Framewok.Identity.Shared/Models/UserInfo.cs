@@ -8,7 +8,7 @@
         public string Username { get; set; } = string.Empty;
         public IEnumerable<ApplicationRole> Roles { get; set; } = Enumerable.Empty<ApplicationRole>();
         public IEnumerable<Tenant> Tenants { get; set; } = Enumerable.Empty<Tenant>();
-        public IEnumerable<Permission> Permissions { get; set; } = Enumerable.Empty<Permission>();
+        public IEnumerable<ApplicationPermission> Permissions { get; set; } = Enumerable.Empty<ApplicationPermission>();
 
     }
 }

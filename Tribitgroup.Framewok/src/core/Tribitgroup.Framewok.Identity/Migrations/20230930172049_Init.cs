@@ -12,6 +12,18 @@ namespace Tribitgroup.Framewok.Identity.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ApplicationPermission",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationPermission", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -178,6 +190,31 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApplicationPermissionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserPermissions_ApplicationPermission_ApplicationPermissionId",
+                        column: x => x.ApplicationPermissionId,
+                        principalTable: "ApplicationPermission",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserPermissions_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -221,6 +258,16 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                 name: "IX_RefreshTokens_ApplicationUserId",
                 table: "RefreshTokens",
                 column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPermissions_ApplicationPermissionId",
+                table: "UserPermissions",
+                column: "ApplicationPermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPermissions_ApplicationUserId",
+                table: "UserPermissions",
+                column: "ApplicationUserId");
         }
 
         /// <inheritdoc />
@@ -245,7 +292,13 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                 name: "RefreshTokens");
 
             migrationBuilder.DropTable(
+                name: "UserPermissions");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationPermission");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

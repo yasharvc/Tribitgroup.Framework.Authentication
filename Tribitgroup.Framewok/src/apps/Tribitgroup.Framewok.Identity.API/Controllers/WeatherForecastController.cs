@@ -49,9 +49,9 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                 Username = "yashar",
                 Permissions = new[]
                 {
-                    new Permission("CREATE_USER"),
-                    new Permission("DELETE_USER"),
-                    new Permission("UPDATE_USER"),
+                    new ApplicationPermission("CREATE_USER"),
+                    new ApplicationPermission("DELETE_USER"),
+                    new ApplicationPermission("UPDATE_USER"),
                 },
                 Roles = new[]
                 {

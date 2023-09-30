@@ -2,7 +2,7 @@
 
 namespace Tribitgroup.Framewok.Identity.Shared.Models
 {
-    public record Permission(string Name) : EntityRecord
+    public record ApplicationPermission(string Name) : EntityRecord
     {
     }
 }
