@@ -1,4 +1,8 @@
 
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Security.Principal;
+using Tribitgroup.Framewok.Identity.Shared.Models;
 using Tribitgroup.Framewok.Shared.Interfaces;
 
 namespace Tribitgroup.Framewok.Identity.API
@@ -20,9 +24,16 @@ namespace Tribitgroup.Framewok.Identity.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            ConfigurationManager configuration = builder.Configuration;
+
+            builder.Services.AddSqlServerEFForIdentity<StandardDbContext>(configuration.GetConnectionString("ConnStr") ?? throw new Exception());
+            builder.AddIdentityAndJwtBearer<StandardDbContext, ApplicationUser, ApplicationRole>();
+
+
             builder.Services.AddScoped<IScheduler>(sp => new TaskDelayScheduler(sp));
 
             builder.InjectIdentityDependencies();
+
 
             var app = builder.Build();
 
@@ -34,12 +45,16 @@ namespace Tribitgroup.Framewok.Identity.API
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthenticationAndAutherization();
 
             app.Use(async (ctx, next) =>
             {
-                await Console.Out.WriteLineAsync(ctx.User.Claims.First(m=>m.Type == "test").Value);
+                //await Console.Out.WriteLineAsync(ctx.User.Claims.First(m=>m.Type == "test").Value);
+                var identity = ctx.User.Identity;
+                foreach (var claim in ctx.User.Claims)
+                {
+                    await Console.Out.WriteLineAsync($"{claim.Type} - {claim.Value}");
+                }
                 await next(ctx);
             });
 

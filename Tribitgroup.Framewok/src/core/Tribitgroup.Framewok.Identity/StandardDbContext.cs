@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tribitgroup.Framewok.Identity.Shared.Models;
 
 namespace Tribitgroup.Framewok.Identity
 {
-    public class StandardDbContext : GenericIdentityDbContext<ApplicationUser, ApplicationRole>
+    public class StandardDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
-        public StandardDbContext(DbContextOptions<GenericIdentityDbContext<ApplicationUser, ApplicationRole>> options) : base(options)
+        public StandardDbContext(DbContextOptions<StandardDbContext> options) : base(options)
         {
         }
     }

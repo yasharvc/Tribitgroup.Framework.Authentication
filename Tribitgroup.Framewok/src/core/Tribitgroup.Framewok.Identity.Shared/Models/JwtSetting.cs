@@ -8,5 +8,9 @@
         public uint ExpiresInSeconds { get; set; }
         public uint RefreshTokenExpiresInMinutes { get; set; }
         public string Secret { get; set; } = string.Empty;
+        public bool ValidateIssuer{get;set;}=true;
+        public bool ValidateAudience{get;set;}=true;
+        public bool ValidateLifetime{get;set;}=true;
+        public bool ValidateIssuerSigningKey { get; set; } = true;
     }
 }
