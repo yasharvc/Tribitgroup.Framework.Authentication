@@ -41,9 +41,10 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         [HttpPost(Name = "GetWeatherForecast")]
         public async Task<TokenInfo> TokenAsync()
         {
-            return (await tokenGenerator.GetTokenAsync(new UserInfo {
-                Email ="yashar@gmail.com",
-                FirstName="yashar",
+            return await tokenGenerator.GetTokenAsync(new UserInfo
+            {
+                Email = "yashar@gmail.com",
+                FirstName = "yashar",
                 LastName = "aliabbasi",
                 Username = "yashar",
                 Permissions = new[]
@@ -54,8 +55,8 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                 },
                 Roles = new[]
                 {
-                    new Role(BasicTypesExtensions.GetSequentialGuid(),"Role 1"),
-                    new Role(BasicTypesExtensions.GetSequentialGuid(),"Role 2"),
+                    new ApplicationRole{Id = BasicTypesExtensions.GetSequentialGuid(),Name = "Role 1" },
+                    new ApplicationRole{Id = BasicTypesExtensions.GetSequentialGuid(),Name = "Role 2" },
                 },
                 Tenants = new[]
                 {
@@ -63,7 +64,7 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                     new Tenant(BasicTypesExtensions.GetSequentialGuid(), "", "T2","Tenant 2"),
 
                 }
-            }));
+            });
         }
     }
 }

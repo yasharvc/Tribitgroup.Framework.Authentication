@@ -5,6 +5,10 @@ namespace Tribitgroup.Framewok.Identity.API
 {
     public class Program
     {
+
+        //Add Middlewarefor dumming roles
+        //Add authorized route
+        //Add 
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -31,11 +35,13 @@ namespace Tribitgroup.Framewok.Identity.API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthenticationAndAutherization();
 
-
-
+            app.Use(async (ctx, next) =>
+            {
+                await Console.Out.WriteLineAsync(ctx.User.Claims.First(m=>m.Type == "test").Value);
+                await next(ctx);
+            });
 
             app.MapControllers();
 

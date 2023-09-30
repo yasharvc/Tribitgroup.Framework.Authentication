@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Tribitgroup.Framewok.Identity.Middlewares;
 using Tribitgroup.Framewok.Identity.Shared.Interfaces;
 using Tribitgroup.Framewok.Identity.Shared.Models;
 
@@ -22,6 +23,25 @@ namespace Tribitgroup.Framewok.Identity
             builder.Services.InjectIdentityDependencies(config);
 
             return builder;
+        }
+
+        public static WebApplication UseAuthenticationAndAutherization(this WebApplication app)
+        {
+            AddPreAuthenticationMiddlewares(app);
+            app.UseAuthentication();
+            AddAuthMiddlewares(app);
+            app.UseAuthorization();
+            return app;
+        }
+
+        private static void AddAuthMiddlewares(WebApplication app)
+        {
+            
+        }
+
+        private static void AddPreAuthenticationMiddlewares(WebApplication app)
+        {
+            app.UseMiddleware<TestMiddleware>();
         }
     }
 }
