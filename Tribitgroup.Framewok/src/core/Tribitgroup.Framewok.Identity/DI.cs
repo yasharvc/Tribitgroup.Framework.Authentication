@@ -108,7 +108,7 @@ namespace Tribitgroup.Framewok.Identity
 
         private static void AddPreAuthenticationMiddlewares(WebApplication app)
         {
-            app.UseMiddleware<TestMiddleware>();
+            //app.UseMiddleware<ClientAuthenticatorMiddleware>();
         }
     }
 }

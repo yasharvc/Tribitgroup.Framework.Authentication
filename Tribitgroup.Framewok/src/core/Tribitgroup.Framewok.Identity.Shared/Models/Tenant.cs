@@ -1,6 +1,6 @@
-﻿namespace Tribitgroup.Framewok.Identity.Shared.Models
+﻿using Tribitgroup.Framewok.Shared.Entities;
+
+namespace Tribitgroup.Framewok.Identity.Shared.Models
 {
-    public record Tenant(Guid Id, string PathToParent, string ShortKey, string Title)
-    {
-    }
+    public record Tenant(string PathToParent, string ShortKey, string Title) : EntityRecord { }
 }

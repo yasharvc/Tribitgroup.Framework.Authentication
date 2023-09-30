@@ -1,6 +1,8 @@
-﻿namespace Tribitgroup.Framewok.Identity.Shared.Models
+﻿using Tribitgroup.Framewok.Shared.Entities;
+
+namespace Tribitgroup.Framewok.Identity.Shared.Models
 {
-    public sealed class JwtSetting
+    public sealed class JwtSetting : Entity
     {
         public string Issuer { get; set; } = string.Empty;
         public string Audience { get; set; } = string.Empty;

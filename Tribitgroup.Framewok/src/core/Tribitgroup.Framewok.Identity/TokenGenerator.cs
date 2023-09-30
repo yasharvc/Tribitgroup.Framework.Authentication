@@ -55,7 +55,7 @@ namespace Tribitgroup.Framewok.Identity
             };
 
             foreach (var userRole in userInfo.Roles)
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole.Name));
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole.Name ?? ""));
 
             foreach (var userTenant in userInfo.Tenants) {
                 authClaims.Add(new Claim("tenant-name", userTenant.Title));

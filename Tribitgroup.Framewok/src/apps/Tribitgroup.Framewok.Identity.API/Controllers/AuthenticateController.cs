@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,31 +22,36 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ITokenGenerator _tokenGenerator;
         private readonly JwtSetting _jwtSetting;
+        private readonly StandardDbContext identityDbContext;
 
         public AuthenticateController(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             ITokenGenerator tokenGenerator,
-            JwtSetting jwtSetting)
+            JwtSetting jwtSetting,
+            StandardDbContext identityDbContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _tokenGenerator = tokenGenerator;
             _jwtSetting = jwtSetting;
+            this.identityDbContext = identityDbContext;
         }
 
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            var username = model.Username ?? "";
+            var password = model.Password ?? "";
+            var user = await _userManager.FindByNameAsync(username);
+            if (user != null && await _userManager.CheckPasswordAsync(user, password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, username),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -54,21 +60,26 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                
 
                 var token = CreateToken(authClaims);
+                var tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
                 var refreshToken = GenerateRefreshToken();
 
-                uint refreshTokenValidityInDays = _jwtSetting.RefreshTokenExpiresInMinutes;
-
-                user.RefreshToken = refreshToken;
-                user.RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
+                identityDbContext.RefreshTokens.Add(new UserRefreshToken{
+                    RefreshToken = refreshToken,
+                    Token = tokenStr,
+                    UsedCount = 0,
+                    ApplicationUserId = user.Id,
+                    ValidUntil = DateTime.UtcNow.AddMinutes(_jwtSetting.RefreshTokenExpiresInMinutes),
+                });
 
                 await _userManager.UpdateAsync(user);
 
+                await identityDbContext.SaveChangesAsync();
+
                 return Ok(new
                 {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    Token = tokenStr,
                     RefreshToken = refreshToken,
                     Expiration = token.ValidTo
                 });
@@ -80,7 +91,9 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var username = model.Username ?? "";
+            var password = model.Password ?? "";
+            var userExists = await _userManager.FindByNameAsync(username);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
 
@@ -90,7 +103,7 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
@@ -101,7 +114,9 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         [Route("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var username = model.Username ?? "";
+            var password = model.Password ?? "";
+            var userExists = await _userManager.FindByNameAsync(username);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
 
@@ -111,7 +126,7 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
@@ -149,23 +164,34 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                 return BadRequest("Invalid access token or refresh token");
             }
 
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            string username = principal.Identity.Name;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            string username = principal.Identity?.Name ?? "";
 
             var user = await _userManager.FindByNameAsync(username);
 
-            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null)
             {
                 return BadRequest("Invalid access token or refresh token");
             }
 
+            var refreshTokenInDb = await identityDbContext.Set<UserRefreshToken>().FirstOrDefaultAsync(m=>m.RefreshToken == refreshToken && m.ValidUntil > DateTime.UtcNow);
+            if(refreshTokenInDb is null)
+                return BadRequest("Invalid access token or refresh token");
+
             var newAccessToken = CreateToken(principal.Claims.ToList());
             var newRefreshToken = GenerateRefreshToken();
 
-            user.RefreshToken = newRefreshToken;
+            refreshTokenInDb.UsedCount++;
+            identityDbContext.Update(refreshTokenInDb);
+
+            await identityDbContext.Set<UserRefreshToken>().AddAsync(new UserRefreshToken
+            {
+                RefreshToken = newRefreshToken,
+                Token = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                UsedCount = 0,
+                ApplicationUserId = user.Id,
+                ValidUntil = DateTime.UtcNow.AddMinutes(_jwtSetting.RefreshTokenExpiresInMinutes),
+            });
+
             await _userManager.UpdateAsync(user);
 
             return new ObjectResult(new
@@ -175,34 +201,34 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
             });
         }
 
-        [Authorize]
-        [HttpPost]
-        [Route("revoke/{username}")]
-        public async Task<IActionResult> Revoke(string username)
-        {
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null) return BadRequest("Invalid user name");
+        //[Authorize]
+        //[HttpPost]
+        //[Route("revoke/{username}")]
+        //public async Task<IActionResult> Revoke(string username)
+        //{
+        //    var user = await _userManager.FindByNameAsync(username);
+        //    if (user == null) return BadRequest("Invalid user name");
 
-            user.RefreshToken = null;
-            await _userManager.UpdateAsync(user);
+        //    user.RefreshToken = null;
+        //    await _userManager.UpdateAsync(user);
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        [Authorize]
-        [HttpPost]
-        [Route("revoke-all")]
-        public async Task<IActionResult> RevokeAll()
-        {
-            var users = _userManager.Users.ToList();
-            foreach (var user in users)
-            {
-                user.RefreshToken = null;
-                await _userManager.UpdateAsync(user);
-            }
+        //[Authorize]
+        //[HttpPost]
+        //[Route("revoke-all")]
+        //public async Task<IActionResult> RevokeAll()
+        //{
+        //    var users = _userManager.Users.ToList();
+        //    foreach (var user in users)
+        //    {
+        //        user.RefreshToken = null;
+        //        await _userManager.UpdateAsync(user);
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         [Authorize(Roles ="Role1")]
         [HttpGet]

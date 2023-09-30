@@ -49,9 +49,9 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                 Username = "yashar",
                 Permissions = new[]
                 {
-                    new Permission(BasicTypesExtensions.GetSequentialGuid(),"CREATE_USER"),
-                    new Permission(BasicTypesExtensions.GetSequentialGuid(),"DELETE_USER"),
-                    new Permission(BasicTypesExtensions.GetSequentialGuid(),"UPDATE_USER"),
+                    new Permission("CREATE_USER"),
+                    new Permission("DELETE_USER"),
+                    new Permission("UPDATE_USER"),
                 },
                 Roles = new[]
                 {
@@ -60,8 +60,8 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
                 },
                 Tenants = new[]
                 {
-                    new Tenant(BasicTypesExtensions.GetSequentialGuid(), "", "T1","Tenant 1"),
-                    new Tenant(BasicTypesExtensions.GetSequentialGuid(), "", "T2","Tenant 2"),
+                    new Tenant("", "T1","Tenant 1"),
+                    new Tenant("", "T2","Tenant 2"),
 
                 }
             });

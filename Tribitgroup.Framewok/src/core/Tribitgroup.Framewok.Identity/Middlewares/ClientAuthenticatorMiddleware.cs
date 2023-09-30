@@ -5,10 +5,10 @@ using Tribitgroup.Framewok.Identity.Shared.Extensions;
 
 namespace Tribitgroup.Framewok.Identity.Middlewares
 {
-    internal class TestMiddleware
+    internal class ClientAuthenticatorMiddleware
     {
         readonly RequestDelegate _next;
-        public TestMiddleware(RequestDelegate next)
+        public ClientAuthenticatorMiddleware(RequestDelegate next)
         {
             _next = next;
         }
