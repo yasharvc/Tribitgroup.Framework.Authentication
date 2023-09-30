@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Tribitgroup.Framewok.Identity.Middlewares;
+using Tribitgroup.Framewok.Identity.Server;
 using Tribitgroup.Framewok.Identity.Shared.Interfaces;
 using Tribitgroup.Framewok.Identity.Shared.Models;
 
@@ -14,20 +14,26 @@ namespace Tribitgroup.Framewok.Identity
 {
     public static class DI
     {
-        public static IServiceCollection AddSqlServerEFForIdentity<TDbContext>(this IServiceCollection services, string connectionString)
-            where TDbContext : DbContext 
+        public static IServiceCollection AddSqlServerEFForIdentity<TDbContext, TUser, TRole, TPermission>(this IServiceCollection services, string connectionString)
+            where TDbContext : DbContext, IIdentityDbContext<TUser, TRole, TPermission>
+            where TUser : ApplicationUser
+            where TRole : ApplicationRole
+            where TPermission : ApplicationPermission
         {
             services.AddDbContext<TDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
             });
 
-            
+            services.AddScoped<IIdentityDbContext<TUser, TRole, TPermission>, TDbContext>();
+            services.AddScoped<IIdentityServerService, IdentityServerService<TUser, TRole, TPermission>>();
 
             return services;
         }
 
-        public static IServiceCollection AddIdentityAndJwtBearer<TDbContext, TUser, TRole>(this IServiceCollection services, ConfigurationManager configuration)
+        public static IServiceCollection AddSqlServerEFForStandardIdentity(this IServiceCollection services, string connectionString) => services.AddSqlServerEFForIdentity<StandardDbContext, ApplicationUser, ApplicationRole, ApplicationPermission>(connectionString);
+
+        public static IServiceCollection AddIdentityAndJwtBearer<TDbContext, TUser, TRole, TPermission>(this IServiceCollection services, ConfigurationManager configuration)
             where TDbContext : DbContext
             where TUser : ApplicationUser
             where TRole : ApplicationRole
@@ -66,14 +72,17 @@ namespace Tribitgroup.Framewok.Identity
             return services;
         }
 
-        public static WebApplicationBuilder AddIdentityAndJwtBearer<TDbContext, TUser, TRole>(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder AddIdentityAndJwtBearer<TDbContext, TUser, TRole, TPermission>(this WebApplicationBuilder builder)
             where TDbContext : DbContext
             where TUser : ApplicationUser
             where TRole : ApplicationRole
+            where TPermission : ApplicationPermission
         {
-            builder.Services.AddIdentityAndJwtBearer<TDbContext, TUser, TRole>(builder.Configuration);
+            builder.Services.AddIdentityAndJwtBearer<TDbContext, TUser, TRole, TPermission>(builder.Configuration);
             return builder;
         }
+
+        public static WebApplicationBuilder AddIdentityAndJwtBearer(this WebApplicationBuilder builder) => builder.AddIdentityAndJwtBearer<StandardDbContext, ApplicationUser, ApplicationRole, ApplicationPermission>();
 
 
         public static IServiceCollection InjectIdentityDependencies(this IServiceCollection services, JwtSetting jwtSetting)

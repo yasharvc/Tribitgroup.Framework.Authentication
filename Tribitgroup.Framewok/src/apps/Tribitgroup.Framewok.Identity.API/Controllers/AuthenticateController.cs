@@ -9,6 +9,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Tribitgroup.Framewok.Identity.Shared.DTO;
+using Tribitgroup.Framewok.Identity.Shared.Exceptions;
 using Tribitgroup.Framewok.Identity.Shared.Interfaces;
 using Tribitgroup.Framewok.Identity.Shared.Models;
 
@@ -23,19 +25,22 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         private readonly ITokenGenerator _tokenGenerator;
         private readonly JwtSetting _jwtSetting;
         private readonly StandardDbContext identityDbContext;
+        private readonly IIdentityServerService _identityServerService;
 
         public AuthenticateController(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             ITokenGenerator tokenGenerator,
             JwtSetting jwtSetting,
-            StandardDbContext identityDbContext)
+            StandardDbContext identityDbContext,
+            IIdentityServerService identityServerService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _tokenGenerator = tokenGenerator;
             _jwtSetting = jwtSetting;
             this.identityDbContext = identityDbContext;
+            _identityServerService = identityServerService;
         }
 
         [HttpPost]
@@ -89,64 +94,46 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterWithUsernameEmailPasswordInputDTO model)
         {
-            var username = model.Username ?? "";
-            var password = model.Password ?? "";
-            var userExists = await _userManager.FindByNameAsync(username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
-
-            ApplicationUser user = new()
+            try
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                var userId = await _identityServerService.RegisterAsync(model);
+                var roleId = await _identityServerService.AddRoleAsync("Admin");
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+                await _identityServerService.AddRoleToUserAsync(userId, "Admin");
+
+                return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            }
+            catch (UserExistsException)
+            {
+                return BadRequest("User already exists");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
         [Route("register-admin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterWithUsernameEmailPasswordInputDTO model)
         {
-            var username = model.Username ?? "";
-            var password = model.Password ?? "";
-            var userExists = await _userManager.FindByNameAsync(username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
-
-            ApplicationUser user = new()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
-            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                await _roleManager.CreateAsync(new ApplicationRole(UserRoles.Admin));
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-                await _roleManager.CreateAsync(new ApplicationRole(UserRoles.User));
-
-            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-            {
-                await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-            }
-            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-            {
-                await _userManager.AddToRoleAsync(user, UserRoles.User);
-            }
+            
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
         [HttpPost]
+        [Route("add-permission")]
+        public async Task<IActionResult> AddPermissionAsync([FromBody] string newOne)
+        {
+            await _identityServerService.AddPermissionAsync<ApplicationPermission>(new ApplicationPermission(newOne));
+            return Ok();
+        }
+
+
+
+            [HttpPost]
         [Route("refresh-token")]
         public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
         {
@@ -281,18 +268,6 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         }
 
     }
-    public class RegisterModel
-    {
-        [Required(ErrorMessage = "User Name is required")]
-        public string? Username { get; set; }
-
-        [EmailAddress]
-        [Required(ErrorMessage = "Email is required")]
-        public string? Email { get; set; }
-
-        [Required(ErrorMessage = "Password is required")]
-        public string? Password { get; set; }
-    }
     public class TokenModel
     {
         public string? AccessToken { get; set; }
@@ -310,10 +285,5 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
 
         [Required(ErrorMessage = "Password is required")]
         public string? Password { get; set; }
-    }
-    public static class UserRoles
-    {
-        public const string Admin = "Admin";
-        public const string User = "User";
     }
 }

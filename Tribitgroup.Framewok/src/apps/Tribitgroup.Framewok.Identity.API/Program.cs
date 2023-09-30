@@ -26,8 +26,8 @@ namespace Tribitgroup.Framewok.Identity.API
 
             ConfigurationManager configuration = builder.Configuration;
 
-            builder.Services.AddSqlServerEFForIdentity<StandardDbContext>(configuration.GetConnectionString("ConnStr") ?? throw new Exception());
-            builder.AddIdentityAndJwtBearer<StandardDbContext, ApplicationUser, ApplicationRole>();
+            builder.Services.AddSqlServerEFForStandardIdentity(configuration.GetConnectionString("ConnStr") ?? throw new Exception());
+            builder.AddIdentityAndJwtBearer();
 
 
             builder.Services.AddScoped<IScheduler>(sp => new TaskDelayScheduler(sp));
