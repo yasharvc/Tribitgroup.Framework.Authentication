@@ -41,6 +41,7 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         [HttpPost(Name = "GetWeatherForecast")]
         public async Task<TokenInfo> TokenAsync()
         {
+            var x = HttpContext.Items["User"];
             return await tokenGenerator.GetTokenAsync(new UserInfo
             {
                 Email = "yashar@gmail.com",

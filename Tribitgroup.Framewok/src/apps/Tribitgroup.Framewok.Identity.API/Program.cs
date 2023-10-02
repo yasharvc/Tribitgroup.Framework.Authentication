@@ -49,6 +49,10 @@ namespace Tribitgroup.Framewok.Identity.API
 
             app.Use(async (ctx, next) =>
             {
+                ctx.Items["User"] = new ApplicationUser
+                {
+                    Email = "yashar@gmail.com"
+                };
                 //await Console.Out.WriteLineAsync(ctx.User.Claims.First(m=>m.Type == "test").Value);
                 var identity = ctx.User.Identity;
                 foreach (var claim in ctx.User.Claims)

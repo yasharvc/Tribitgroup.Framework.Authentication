@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -107,7 +108,17 @@ namespace Tribitgroup.Framewok.Identity
             app.UseAuthentication();
             AddAuthMiddlewares(app);
             app.UseAuthorization();
+            AddPostAuthenticationMiddleware(app);
+
             return app;
+        }
+
+        private static void AddPostAuthenticationMiddleware(WebApplication app)
+        {
+            app.MapGet("/test", (HttpContext ctx) =>
+            {
+                return new { returl = true };
+            });
         }
 
         private static void AddAuthMiddlewares(WebApplication app)

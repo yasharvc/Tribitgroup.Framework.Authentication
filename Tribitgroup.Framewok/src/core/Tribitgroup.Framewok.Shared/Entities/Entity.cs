@@ -1,4 +1,5 @@
-﻿using Tribitgroup.Framewok.Shared.Extensions;
+﻿using Tribitgroup.Framewok.Shared.Entities.Interfaces;
+using Tribitgroup.Framewok.Shared.Extensions;
 
 namespace Tribitgroup.Framewok.Shared.Entities
 {

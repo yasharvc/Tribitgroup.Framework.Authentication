@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.ObjectModel;
-using Tribitgroup.Framewok.Shared.Entities;
+using Tribitgroup.Framewok.Shared.Entities.Interfaces;
 using Tribitgroup.Framewok.Shared.Extensions;
 
 namespace Tribitgroup.Framewok.Identity.Shared.Models
