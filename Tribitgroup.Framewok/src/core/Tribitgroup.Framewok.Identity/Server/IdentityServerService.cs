@@ -8,7 +8,7 @@ using Tribitgroup.Framewok.Shared.Extensions;
 
 namespace Tribitgroup.Framewok.Identity.Server
 {
-    public class IdentityServerService<TUser, TRole, TPermission> : IIdentityServerService<TPermission>
+    public class IdentityServerService<TUser, TRole, TPermission> : IIdentityServerService<TUser, TRole ,TPermission>
         where TUser : ApplicationUser
         where TRole : ApplicationRole
         where TPermission : ApplicationPermission
@@ -34,13 +34,13 @@ namespace Tribitgroup.Framewok.Identity.Server
         PermissionRepository PermissionRepo { get; init; }
 
         IIdentityDbContext<TUser, TRole, TPermission> IdentityDbContext { get; }
-        UserManager<ApplicationUser> UserManager { get; }
-        RoleManager<ApplicationRole> RoleManager { get; }
+        UserManager<TUser> UserManager { get; }
+        RoleManager<TRole> RoleManager { get; }
 
         public IdentityServerService(
             IIdentityDbContext<TUser, TRole, TPermission> dbContext,
-            UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager
+            UserManager<TUser> userManager,
+            RoleManager<TRole> roleManager
             )
         {
             IdentityDbContext = dbContext;
@@ -54,18 +54,18 @@ namespace Tribitgroup.Framewok.Identity.Server
         {
             var username = input.Username ?? "";
             var password = input.Password ?? "";
-            var userExists = await IdentityDbContext.GetUserDbSet().FirstOrDefaultAsync(m=>m.UserName == username);
+            var userExists = await IdentityDbContext.GetUserDbSet().FirstOrDefaultAsync(m =>m.UserName == username, cancellationToken: cancellationToken);
             if (userExists != null)
                 throw new UserExistsException();
 
-            ApplicationUser user = new()
+            var user = new ApplicationUser()
             {
                 Email = input.Email,
                 SecurityStamp = BasicTypesExtensions.GetSequentialGuid().ToString(),
                 UserName = input.Username
             };
 
-            var result = await UserManager.CreateAsync(user, password);
+            var result = await UserManager.CreateAsync((TUser)user, password);
             if (!result.Succeeded)
                 throw new Exception();
 
@@ -85,20 +85,22 @@ namespace Tribitgroup.Framewok.Identity.Server
             }
         }
 
-        private async Task<TUser> GetUserByIdAsync(Guid userId) => (TUser)await UserManager.FindByIdAsync(userId.ToString()) ?? throw new UserNotFoundException();
+        private async Task<TUser> GetUserByIdAsync(Guid userId) => await UserManager.FindByIdAsync(userId.ToString()) ?? throw new UserNotFoundException();
 
-        public async Task<Guid> AddRoleAsync(string roleName)
+        public async Task<TRole> CreateRoleAsync(string roleName)
         {
             if (!await RoleManager.RoleExistsAsync(roleName))
-                await RoleManager.CreateAsync(new ApplicationRole(roleName));
+                await RoleManager.CreateAsync((TRole)new ApplicationRole(roleName));
 
             var role = await RoleManager.FindByNameAsync(roleName);
 
-            return role.Id;
+            return role ?? throw new Exception();
         }
 
         public Task<IEnumerable<TPermission>> CreatePermissionAsync(params TPermission[] permissions) => PermissionRepo.CreatePermissionAsync(permissions);
 
         public Task<IEnumerable<TPermission>> GetAllPermissionAsync() => PermissionRepo.GetAllAsync();
+
+        public async Task<IEnumerable<TRole>> GetAllRolesAsync() => (await RoleManager.Roles.ToListAsync()).AsEnumerable();
     }
 }

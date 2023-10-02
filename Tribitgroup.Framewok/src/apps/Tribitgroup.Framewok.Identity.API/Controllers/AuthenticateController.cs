@@ -25,7 +25,7 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         private readonly ITokenGenerator _tokenGenerator;
         private readonly JwtSetting _jwtSetting;
         private readonly StandardDbContext identityDbContext;
-        private readonly IIdentityServerService<ApplicationPermission> _identityServerService;
+        private readonly IIdentityServerService<ApplicationUser, ApplicationRole, ApplicationPermission> _identityServerService;
 
         public AuthenticateController(
             UserManager<ApplicationUser> userManager,
@@ -33,7 +33,7 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
             ITokenGenerator tokenGenerator,
             JwtSetting jwtSetting,
             StandardDbContext identityDbContext,
-            IIdentityServerService<ApplicationPermission> identityServerService)
+            IIdentityServerService<ApplicationUser, ApplicationRole, ApplicationPermission> identityServerService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -44,33 +44,9 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         }
 
         [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterWithUsernameEmailPasswordInputDTO model)
-        {
-            try
-            {
-                var userId = await _identityServerService.RegisterAsync(model);
-                var roleId = await _identityServerService.AddRoleAsync("Admin");
-
-                await _identityServerService.AddRoleToUserAsync(userId, "Admin");
-
-                return Ok(new Response { Status = "Success", Message = "User created successfully!" });
-            }
-            catch (UserExistsException)
-            {
-                return BadRequest("User already exists");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost]
         [Route("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterWithUsernameEmailPasswordInputDTO model)
         {
-            
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 

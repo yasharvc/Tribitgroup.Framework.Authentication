@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Azure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Tribitgroup.Framewok.Identity.Server;
+using Tribitgroup.Framewok.Identity.Shared.Consts;
 using Tribitgroup.Framewok.Identity.Shared.DTO;
+using Tribitgroup.Framewok.Identity.Shared.Exceptions;
 using Tribitgroup.Framewok.Identity.Shared.Interfaces;
 using Tribitgroup.Framewok.Identity.Shared.Models;
 
@@ -34,7 +37,7 @@ namespace Tribitgroup.Framewok.Identity
             });
 
             services.AddScoped<IIdentityDbContext<TUser, TRole, TPermission>, TDbContext>();
-            services.AddScoped<IIdentityServerService<TPermission>, IdentityServerService<TUser, TRole, TPermission>>();
+            services.AddScoped<IIdentityServerService<TUser, TRole, TPermission>, IdentityServerService<TUser, TRole, TPermission>>();
 
             return services;
         }
@@ -123,27 +126,103 @@ namespace Tribitgroup.Framewok.Identity
         private static void AddPostAuthenticationMiddleware(WebApplication app)
         {
             AddLoginMethod(app);
+            AddRegisterWithUsernameEmailPassword(app);
             AddPermissionMethods(app);
+            AddRoleMethods(app);
+        }
+
+        private static void AddRoleMethods(WebApplication app)
+        {
+            app.MapPost($"{GetUrlPrefix(app)}/role", async (
+                HttpContext ctx,
+                IIdentityServerService<
+                    ApplicationUser,
+                    ApplicationRole,
+                    ApplicationPermission> identityService,
+                RoleInputDTO role
+                ) =>
+            {
+                var res = await identityService.CreateRoleAsync(role.RoleName);
+
+                return Results.Ok(new { id = res, roleName = role.RoleName });
+            });
+
+            app.MapGet($"{GetUrlPrefix(app)}/role", async (
+                IIdentityServerService<ApplicationUser,
+                    ApplicationRole,
+                    ApplicationPermission> identityService) =>
+            {
+                return Results.Ok(await identityService.GetAllRolesAsync());
+            });
+        }
+
+        private static void AddRegisterWithUsernameEmailPassword(WebApplication app)
+        {
+            app.MapPost($"{GetUrlPrefix(app)}/register", async (
+                HttpContext ctx,
+                IIdentityServerService<ApplicationUser, ApplicationRole, ApplicationPermission> identityService,
+                RegisterWithUsernameEmailPasswordInputDTO model
+                ) =>
+            {
+                try
+                {
+                    var userId = await identityService.RegisterAsync(model);
+
+                    return Results.Ok(new { Status = "Success", Message = "User created successfully!" });
+                }
+                catch (UserExistsException)
+                {
+                    return Results.BadRequest("User already exists");
+                }
+                catch (Exception ex)
+                {
+                    return Results.BadRequest(ex.Message);
+                }
+            });
+
+            app.MapPost($"{GetUrlPrefix(app)}/register-admin", async (
+                HttpContext ctx,
+                IIdentityServerService<ApplicationUser, ApplicationRole, ApplicationPermission> identityService,
+                RegisterWithUsernameEmailPasswordInputDTO model
+                ) =>
+            {
+                try
+                {
+                    var userId = await identityService.RegisterAsync(model);
+
+                    await identityService.AddRoleToUserAsync(userId, DefaultRoles.UserAdmin);
+
+                    return Results.Ok(new { Status = "Success", Message = "User created successfully!" });
+                }
+                catch (UserExistsException)
+                {
+                    return Results.BadRequest("User already exists");
+                }
+                catch (Exception ex)
+                {
+                    return Results.BadRequest(ex.Message);
+                }
+            });
         }
 
         private static void AddPermissionMethods(WebApplication app)
         {
             app.MapPost($"{GetUrlPrefix(app)}/permission", async (
                 HttpContext ctx,
-                IIdentityServerService<ApplicationPermission> identityService,
+                IIdentityServerService<ApplicationUser, ApplicationRole, ApplicationPermission> identityService,
                 CreatePermissionInputDTO permission
                 ) =>
             {
                 var res = await identityService.CreatePermissionAsync(new
                     ApplicationPermission(permission.PermissionName));
 
-                return res.FirstOrDefault();
+                return Results.Ok(res.FirstOrDefault());
             });
 
             app.MapGet($"{GetUrlPrefix(app)}/permission", (
-                IIdentityServerService<ApplicationPermission> identityService) =>
+                IIdentityServerService<ApplicationUser, ApplicationRole, ApplicationPermission> identityService) =>
             {
-                return identityService.GetAllPermissionAsync();
+                return Results.Ok(identityService.GetAllPermissionAsync());
             });
         }
 
@@ -155,7 +234,7 @@ namespace Tribitgroup.Framewok.Identity
                 ITokenGenerator tokenGenerator,
                 JwtSetting jwtSetting,
                 StandardDbContext identityDbContext,
-                IIdentityServerService<ApplicationPermission> identityServerService
+                IIdentityServerService<ApplicationUser, ApplicationRole, ApplicationPermission> identityServerService
                     , LoginWithUsernamePasswordInputDTO model) =>
             {
                 var username = model.Username ?? "";
@@ -194,21 +273,21 @@ namespace Tribitgroup.Framewok.Identity
 
                     await identityDbContext.SaveChangesAsync();
 
-                    return new
+                    return Results.Ok(new
                     {
                         Token = tokenStr,
                         RefreshToken = refreshToken,
                         Expiration = token.ValidTo
-                    };
+                    });
                 }
 
-                throw new UnauthorizedAccessException();
+                return Results.Unauthorized();
             });
         }
 
         private static object GetUrlPrefix(WebApplication app)
         {
-            return "";
+            return "api/authentication";
         }
 
         private static void AddAuthMiddlewares(WebApplication app)
