@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Tribitgroup.Framewok.Identity.Shared.Consts;
 using Tribitgroup.Framewok.Identity.Shared.Models;
 
 namespace Tribitgroup.Framewok.Identity
@@ -27,6 +28,9 @@ namespace Tribitgroup.Framewok.Identity
             builder
                 .Entity<ApplicationUser>()
                 .HasMany(m => m.Permissions);
+
+            builder.Entity<ApplicationRole>()
+                .HasData(new ApplicationRole { Name = DefaultRoles.UserAdmin });
         }
     }
 }

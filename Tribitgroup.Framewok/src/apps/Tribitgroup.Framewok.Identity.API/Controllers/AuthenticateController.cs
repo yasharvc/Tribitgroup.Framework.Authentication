@@ -25,7 +25,7 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         private readonly ITokenGenerator _tokenGenerator;
         private readonly JwtSetting _jwtSetting;
         private readonly StandardDbContext identityDbContext;
-        private readonly IIdentityServerService _identityServerService;
+        private readonly IIdentityServerService<ApplicationPermission> _identityServerService;
 
         public AuthenticateController(
             UserManager<ApplicationUser> userManager,
@@ -33,7 +33,7 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
             ITokenGenerator tokenGenerator,
             JwtSetting jwtSetting,
             StandardDbContext identityDbContext,
-            IIdentityServerService identityServerService)
+            IIdentityServerService<ApplicationPermission> identityServerService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -74,17 +74,8 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
+
         [HttpPost]
-        [Route("add-permission")]
-        public async Task<IActionResult> AddPermissionAsync([FromBody] string newOne)
-        {
-            await _identityServerService.AddPermissionAsync<ApplicationPermission>(new ApplicationPermission(newOne));
-            return Ok();
-        }
-
-
-
-            [HttpPost]
         [Route("refresh-token")]
         public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
         {

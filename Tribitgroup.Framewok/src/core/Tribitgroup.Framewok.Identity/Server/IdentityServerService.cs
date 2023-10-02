@@ -8,11 +8,31 @@ using Tribitgroup.Framewok.Shared.Extensions;
 
 namespace Tribitgroup.Framewok.Identity.Server
 {
-    public class IdentityServerService<TUser, TRole, TPermission> : IIdentityServerService
+    public class IdentityServerService<TUser, TRole, TPermission> : IIdentityServerService<TPermission>
         where TUser : ApplicationUser
         where TRole : ApplicationRole
         where TPermission : ApplicationPermission
     {
+
+        class PermissionRepository
+        {
+            IIdentityDbContext<TUser, TRole, TPermission> IdentityDbContext { get; }
+            public PermissionRepository(IIdentityDbContext<TUser, TRole, TPermission> identityDbContext)
+            {
+                IdentityDbContext = identityDbContext;
+            }
+            public async Task<IEnumerable<TPermission>> CreatePermissionAsync(params TPermission[] permissions)
+            {
+                await IdentityDbContext.Permissions.AddRangeAsync(permissions);
+                await (IdentityDbContext as DbContext ?? throw new InvalidCastException()).SaveChangesAsync();
+                return permissions;
+            }
+
+            public async Task<IEnumerable<TPermission>> GetAllAsync() => (await IdentityDbContext.Permissions.ToListAsync()).AsEnumerable();
+        }
+
+        PermissionRepository PermissionRepo { get; init; }
+
         IIdentityDbContext<TUser, TRole, TPermission> IdentityDbContext { get; }
         UserManager<ApplicationUser> UserManager { get; }
         RoleManager<ApplicationRole> RoleManager { get; }
@@ -26,6 +46,7 @@ namespace Tribitgroup.Framewok.Identity.Server
             IdentityDbContext = dbContext;
             UserManager = userManager;
             RoleManager = roleManager;
+            PermissionRepo = new PermissionRepository(dbContext);
         }
 
 
@@ -59,7 +80,7 @@ namespace Tribitgroup.Framewok.Identity.Server
             {
                 if (await RoleManager.RoleExistsAsync(roleName))
                 {
-                    await UserManager.AddToRoleAsync(user, UserRoles.Admin);
+                    await UserManager.AddToRoleAsync(user, roleName);
                 }
             }
         }
@@ -76,17 +97,8 @@ namespace Tribitgroup.Framewok.Identity.Server
             return role.Id;
         }
 
-        public async Task<Guid> AddPermissionAsync<T>(T permission) where T : ApplicationPermission
-        {
-            IdentityDbContext.Permissions.Add(permission as TPermission ?? throw new InvalidCastException());
-            await (IdentityDbContext as DbContext ?? throw new InvalidCastException()).SaveChangesAsync();
-            return permission.Id;
-        }
+        public Task<IEnumerable<TPermission>> CreatePermissionAsync(params TPermission[] permissions) => PermissionRepo.CreatePermissionAsync(permissions);
 
-        public static class UserRoles
-        {
-            public const string Admin = "Admin";
-            public const string User = "User";
-        }
+        public Task<IEnumerable<TPermission>> GetAllPermissionAsync() => PermissionRepo.GetAllAsync();
     }
 }
