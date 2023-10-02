@@ -44,55 +44,6 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         }
 
         [HttpPost]
-        [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
-        {
-            var username = model.Username ?? "";
-            var password = model.Password ?? "";
-            var user = await _userManager.FindByNameAsync(username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, password))
-            {
-                var userRoles = await _userManager.GetRolesAsync(user);
-
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-
-                var token = CreateToken(authClaims);
-                var tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
-                var refreshToken = GenerateRefreshToken();
-
-                identityDbContext.RefreshTokens.Add(new UserRefreshToken{
-                    RefreshToken = refreshToken,
-                    Token = tokenStr,
-                    UsedCount = 0,
-                    ApplicationUserId = user.Id,
-                    ValidUntil = DateTime.UtcNow.AddMinutes(_jwtSetting.RefreshTokenExpiresInMinutes),
-                });
-
-                await _userManager.UpdateAsync(user);
-
-                await identityDbContext.SaveChangesAsync();
-
-                return Ok(new
-                {
-                    Token = tokenStr,
-                    RefreshToken = refreshToken,
-                    Expiration = token.ValidTo
-                });
-            }
-            return Unauthorized();
-        }
-
-        [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterWithUsernameEmailPasswordInputDTO model)
         {
