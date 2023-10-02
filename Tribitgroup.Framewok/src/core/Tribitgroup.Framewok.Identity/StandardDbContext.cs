@@ -8,6 +8,8 @@ namespace Tribitgroup.Framewok.Identity
     public class StandardDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>, IIdentityDbContext<ApplicationUser, ApplicationRole, ApplicationPermission>
     {
         public DbSet<UserRefreshToken> RefreshTokens => Set<UserRefreshToken>();
+        public DbSet<Tenant> Tenants => Set<Tenant>();
+        public DbSet<UserTenant<ApplicationUser>> UserTenants => Set<UserTenant<ApplicationUser>>();
         public DbSet<UserPermission<ApplicationUser, ApplicationPermission>> UserPermissions => Set<UserPermission<ApplicationUser, ApplicationPermission>>();
 
         public DbSet<ApplicationPermission> Permissions => Set<ApplicationPermission>();
@@ -28,6 +30,9 @@ namespace Tribitgroup.Framewok.Identity
             builder
                 .Entity<ApplicationUser>()
                 .HasMany(m => m.Permissions);
+            builder
+                .Entity<ApplicationUser>()
+                .HasMany(m => m.Tenants);
 
             builder.Entity<ApplicationRole>()
                 .HasData(new ApplicationRole { Name = DefaultRoles.UserAdmin });

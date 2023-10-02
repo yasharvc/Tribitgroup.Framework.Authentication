@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tribitgroup.Framewok.Identity;
 
@@ -11,9 +12,11 @@ using Tribitgroup.Framewok.Identity;
 namespace Tribitgroup.Framewok.Identity.Migrations
 {
     [DbContext(typeof(StandardDbContext))]
-    partial class StandardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231002200409_Added_User_Tenant")]
+    partial class Added_User_Tenant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
