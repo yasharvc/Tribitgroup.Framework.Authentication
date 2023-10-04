@@ -36,13 +36,39 @@ namespace Tribitgroup.Framewok.Identity
                 options.UseSqlServer(connectionString);
             });
 
-            services.AddScoped<IIdentityDbContext<TUser, TRole, TPermission>, TDbContext>();
-            services.AddScoped<IIdentityServerService<TUser, TRole, TPermission>, IdentityServerService<TUser, TRole, TPermission>>();
+            AddIdentityDbContextAndServerService<TDbContext, TUser, TRole, TPermission>(services);
 
             return services;
         }
 
+        public static IServiceCollection AddSqliteEFForIdentity<TDbContext, TUser, TRole, TPermission>(this IServiceCollection services, string connectionString)
+            where TDbContext : DbContext, IIdentityDbContext<TUser, TRole, TPermission>
+            where TUser : ApplicationUser
+            where TRole : ApplicationRole
+            where TPermission : ApplicationPermission
+        {
+            services.AddDbContext<TDbContext>(options =>
+            {
+                options.UseSqlite(connectionString);
+            });
+
+            AddIdentityDbContextAndServerService<TDbContext, TUser, TRole, TPermission>(services);
+
+            return services;
+        }
+
+        private static void AddIdentityDbContextAndServerService<TDbContext, TUser, TRole, TPermission>(IServiceCollection services)
+            where TDbContext : DbContext, IIdentityDbContext<TUser, TRole, TPermission>
+            where TUser : ApplicationUser
+            where TRole : ApplicationRole
+            where TPermission : ApplicationPermission
+        {
+            services.AddScoped<IIdentityDbContext<TUser, TRole, TPermission>, TDbContext>();
+            services.AddScoped<IIdentityServerService<TUser, TRole, TPermission>, IdentityServerService<TUser, TRole, TPermission>>();
+        }
+
         public static IServiceCollection AddSqlServerEFForStandardIdentity(this IServiceCollection services, string connectionString) => services.AddSqlServerEFForIdentity<StandardDbContext, ApplicationUser, ApplicationRole, ApplicationPermission>(connectionString);
+        public static IServiceCollection AddSqliteEFForStandardIdentity(this IServiceCollection services, string connectionString) => services.AddSqliteEFForIdentity<StandardDbContext, ApplicationUser, ApplicationRole, ApplicationPermission>(connectionString);
 
         public static IServiceCollection AddIdentityAndJwtBearer<TDbContext, TUser, TRole, TPermission>(this IServiceCollection services, ConfigurationManager configuration)
             where TDbContext : DbContext

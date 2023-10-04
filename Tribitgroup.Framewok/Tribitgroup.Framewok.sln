@@ -11,15 +11,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{CE7C692C-C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{18CC7602-5704-41A3-892B-CE6C4953522F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framewok.Identity", "src\core\Tribitgroup.Framewok.Identity\Tribitgroup.Framewok.Identity.csproj", "{A99EBD09-2DEE-4E68-8957-D8FE940C2EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framewok.Identity", "src\core\Tribitgroup.Framewok.Identity\Tribitgroup.Framewok.Identity.csproj", "{A99EBD09-2DEE-4E68-8957-D8FE940C2EAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framewok.Shared", "src\core\Tribitgroup.Framewok.Shared\Tribitgroup.Framewok.Shared.csproj", "{40DAD6FD-2250-428D-BAE0-231F8A687659}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framewok.Shared", "src\core\Tribitgroup.Framewok.Shared\Tribitgroup.Framewok.Shared.csproj", "{40DAD6FD-2250-428D-BAE0-231F8A687659}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framewok.Identity.API", "src\apps\Tribitgroup.Framewok.Identity.API\Tribitgroup.Framewok.Identity.API.csproj", "{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framewok.Identity.API", "src\apps\Tribitgroup.Framewok.Identity.API\Tribitgroup.Framewok.Identity.API.csproj", "{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framewok.Identity.Shared", "src\core\Tribitgroup.Framewok.Identity.Shared\Tribitgroup.Framewok.Identity.Shared.csproj", "{9A38020D-3A80-4B92-B6CE-F605BBA0C15B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framewok.Identity.Shared", "src\core\Tribitgroup.Framewok.Identity.Shared\Tribitgroup.Framewok.Identity.Shared.csproj", "{9A38020D-3A80-4B92-B6CE-F605BBA0C15B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framewok.Identity.Tests", "test\Tribitgroup.Framewok.Identity.Tests\Tribitgroup.Framewok.Identity.Tests.csproj", "{C7EE7DFC-59E2-4649-9BCE-EA4707885984}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framewok.Identity.Tests", "test\Tribitgroup.Framewok.Identity.Tests\Tribitgroup.Framewok.Identity.Tests.csproj", "{C7EE7DFC-59E2-4649-9BCE-EA4707885984}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestApp", "src\apps\ConsoleTestApp\ConsoleTestApp.csproj", "{F16F3CD5-C407-43F2-BB5C-AA7D1C411CCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{C7EE7DFC-59E2-4649-9BCE-EA4707885984}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7EE7DFC-59E2-4649-9BCE-EA4707885984}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7EE7DFC-59E2-4649-9BCE-EA4707885984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F16F3CD5-C407-43F2-BB5C-AA7D1C411CCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F16F3CD5-C407-43F2-BB5C-AA7D1C411CCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F16F3CD5-C407-43F2-BB5C-AA7D1C411CCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F16F3CD5-C407-43F2-BB5C-AA7D1C411CCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{FD0CAD44-8EA3-4D89-8D35-5BB3E5A76FAC} = {CE7C692C-CA60-40BC-9081-2DB0CAA936BD}
 		{9A38020D-3A80-4B92-B6CE-F605BBA0C15B} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
 		{C7EE7DFC-59E2-4649-9BCE-EA4707885984} = {18CC7602-5704-41A3-892B-CE6C4953522F}
+		{F16F3CD5-C407-43F2-BB5C-AA7D1C411CCE} = {CE7C692C-CA60-40BC-9081-2DB0CAA936BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71091628-2E7E-4C66-8215-8DA5776EAA26}

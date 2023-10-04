@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tribitgroup.Framewok.Identity;
 
 #nullable disable
 
-namespace Tribitgroup.Framewok.Identity.Migrations
+namespace Tribitgroup.Framewok.Identity.Migrations.Sqlite
 {
     [DbContext(typeof(StandardDbContext))]
-    [Migration("20231002200409_Added_User_Tenant")]
-    partial class Added_User_Tenant
+    partial class StandardDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,7 +170,7 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a359059c-4ffa-ed40-bf96-08dbc382bd41"),
+                            Id = new Guid("0c9602c4-28fa-ed40-21dd-08dbc4c8ff61"),
                             Name = "UserAdmin"
                         });
                 });

@@ -26,7 +26,8 @@ namespace Tribitgroup.Framewok.Identity.API
 
             ConfigurationManager configuration = builder.Configuration;
 
-            builder.Services.AddSqlServerEFForStandardIdentity(configuration.GetConnectionString("ConnStr") ?? throw new Exception());
+            //builder.Services.AddSqliteEFForStandardIdentity(configuration.GetConnectionString("SqliteFoAuth") ?? throw new Exception());
+            builder.Services.AddSqlServerEFForStandardIdentity(configuration.GetConnectionString("SqlServerFoAuth") ?? throw new Exception());
             builder.AddIdentityAndJwtBearer();
 
 

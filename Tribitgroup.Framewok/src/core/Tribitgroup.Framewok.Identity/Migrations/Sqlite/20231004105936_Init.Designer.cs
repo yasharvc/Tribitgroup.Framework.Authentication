@@ -9,10 +9,10 @@ using Tribitgroup.Framewok.Identity;
 
 #nullable disable
 
-namespace Tribitgroup.Framewok.Identity.Migrations
+namespace Tribitgroup.Framewok.Identity.Migrations.Sqlite
 {
     [DbContext(typeof(StandardDbContext))]
-    [Migration("20230930172049_Init")]
+    [Migration("20231004105936_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -140,7 +140,7 @@ namespace Tribitgroup.Framewok.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationPermission");
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationRole", b =>
@@ -169,6 +169,13 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("0c9602c4-28fa-ed40-21dd-08dbc4c8ff61"),
+                            Name = "UserAdmin"
+                        });
                 });
 
             modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser", b =>
@@ -237,6 +244,29 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.Tenant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PathToParent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tenants");
+                });
+
             modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.UserPermission<Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser, Tribitgroup.Framewok.Identity.Shared.Models.ApplicationPermission>", b =>
                 {
                     b.Property<Guid>("Id")
@@ -286,6 +316,27 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.UserTenant<Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("UserTenants");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -367,11 +418,32 @@ namespace Tribitgroup.Framewok.Identity.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.UserTenant<Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser>", b =>
+                {
+                    b.HasOne("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Tenants")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tribitgroup.Framewok.Identity.Shared.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("Tribitgroup.Framewok.Identity.Shared.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Permissions");
 
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("Tenants");
                 });
 #pragma warning restore 612, 618
         }
