@@ -1,10 +1,18 @@
 
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Security.Principal;
+using Tribitgroup.Framewok.Identity.Models;
 using Tribitgroup.Framewok.Shared.Interfaces;
 
 namespace Tribitgroup.Framewok.Identity.API
 {
     public class Program
     {
+
+        //Add Middlewarefor dumming roles
+        //Add authorized route
+        //Add 
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -16,9 +24,17 @@ namespace Tribitgroup.Framewok.Identity.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            ConfigurationManager configuration = builder.Configuration;
+
+            //builder.Services.AddSqliteEFForStandardIdentity(configuration.GetConnectionString("SqliteFoAuth") ?? throw new Exception());
+            builder.Services.AddSqlServerEFForStandardIdentity(configuration.GetConnectionString("SqlServerFoAuth") ?? throw new Exception());
+            builder.AddIdentityAndJwtBearer();
+
+
             builder.Services.AddScoped<IScheduler>(sp => new TaskDelayScheduler(sp));
 
             builder.InjectIdentityDependencies();
+
 
             var app = builder.Build();
 
@@ -30,12 +46,22 @@ namespace Tribitgroup.Framewok.Identity.API
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthenticationAndAutherization();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-
-
+            app.Use(async (ctx, next) =>
+            {
+                ctx.Items["User"] = new ApplicationUser
+                {
+                    Email = "yashar@gmail.com"
+                };
+                //await Console.Out.WriteLineAsync(ctx.User.Claims.First(m=>m.Type == "test").Value);
+                var identity = ctx.User.Identity;
+                foreach (var claim in ctx.User.Claims)
+                {
+                    await Console.Out.WriteLineAsync($"{claim.Type} - {claim.Value}");
+                }
+                await next(ctx);
+            });
 
             app.MapControllers();
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Tribitgroup.Framewok.Identity.Shared.Interfaces;
-using Tribitgroup.Framewok.Identity.Shared.Models;
+using Tribitgroup.Framewok.Identity.Interfaces;
+using Tribitgroup.Framewok.Identity.Models;
 using Tribitgroup.Framewok.Shared.Extensions;
 using Tribitgroup.Framewok.Shared.Interfaces;
 
@@ -41,29 +41,31 @@ namespace Tribitgroup.Framewok.Identity.API.Controllers
         [HttpPost(Name = "GetWeatherForecast")]
         public async Task<TokenInfo> TokenAsync()
         {
-            return (await tokenGenerator.GetTokenAsync(new UserInfo {
-                Email ="yashar@gmail.com",
-                FirstName="yashar",
+            var x = HttpContext.Items["User"];
+            return await tokenGenerator.GetTokenAsync(new UserInfo
+            {
+                Email = "yashar@gmail.com",
+                FirstName = "yashar",
                 LastName = "aliabbasi",
                 Username = "yashar",
                 Permissions = new[]
                 {
-                    new Permission(BasicTypesExtensions.GetSequentialGuid(),"CREATE_USER"),
-                    new Permission(BasicTypesExtensions.GetSequentialGuid(),"DELETE_USER"),
-                    new Permission(BasicTypesExtensions.GetSequentialGuid(),"UPDATE_USER"),
+                    new ApplicationPermission("CREATE_USER"),
+                    new ApplicationPermission("DELETE_USER"),
+                    new ApplicationPermission("UPDATE_USER"),
                 },
                 Roles = new[]
                 {
-                    new Role(BasicTypesExtensions.GetSequentialGuid(),"Role 1"),
-                    new Role(BasicTypesExtensions.GetSequentialGuid(),"Role 2"),
+                    new ApplicationRole{Id = BasicTypesExtensions.GetSequentialGuid(),Name = "Role 1" },
+                    new ApplicationRole{Id = BasicTypesExtensions.GetSequentialGuid(),Name = "Role 2" },
                 },
                 Tenants = new[]
                 {
-                    new Tenant(BasicTypesExtensions.GetSequentialGuid(), "", "T1","Tenant 1"),
-                    new Tenant(BasicTypesExtensions.GetSequentialGuid(), "", "T2","Tenant 2"),
+                    new Tenant("", "T1","Tenant 1"),
+                    new Tenant("", "T2","Tenant 2"),
 
                 }
-            }));
+            });
         }
     }
 }
