@@ -3,7 +3,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Tribitgroup.Framewok.Identity.Shared.Interfaces;
+using Tribitgroup.Framewok.Identity.Interfaces;
+using Tribitgroup.Framewok.Identity.Models;
 using Tribitgroup.Framewok.Identity.Shared.Models;
 
 namespace Tribitgroup.Framewok.Identity

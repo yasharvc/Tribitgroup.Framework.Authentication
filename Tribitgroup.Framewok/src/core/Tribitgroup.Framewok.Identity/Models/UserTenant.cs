@@ -1,6 +1,6 @@
 ﻿using Tribitgroup.Framewok.Shared.Entities;
 
-namespace Tribitgroup.Framewok.Identity.Shared.Models
+namespace Tribitgroup.Framewok.Identity.Models
 {
     public class UserTenant<TUser> : Entity where TUser : ApplicationUser
     {

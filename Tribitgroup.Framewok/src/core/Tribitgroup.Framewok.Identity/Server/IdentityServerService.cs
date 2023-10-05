@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Tribitgroup.Framewok.Identity.Shared.DTO;
 using Tribitgroup.Framewok.Identity.Shared.Exceptions;
-using Tribitgroup.Framewok.Identity.Shared.Interfaces;
-using Tribitgroup.Framewok.Identity.Shared.Models;
+using Tribitgroup.Framewok.Identity.Interfaces;
+using Tribitgroup.Framewok.Identity.Models;
 using Tribitgroup.Framewok.Shared.Extensions;
 
 namespace Tribitgroup.Framewok.Identity.Server

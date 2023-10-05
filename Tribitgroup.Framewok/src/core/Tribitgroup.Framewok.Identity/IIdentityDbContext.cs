@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Tribitgroup.Framewok.Identity.Shared.Models;
+using Tribitgroup.Framewok.Identity.Models;
 
 namespace Tribitgroup.Framewok.Identity
 {

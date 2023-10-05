@@ -1,4 +1,4 @@
-﻿namespace Tribitgroup.Framewok.Identity.Shared.Models
+﻿namespace Tribitgroup.Framewok.Identity.Models
 {
     public class TokenInfo
     {

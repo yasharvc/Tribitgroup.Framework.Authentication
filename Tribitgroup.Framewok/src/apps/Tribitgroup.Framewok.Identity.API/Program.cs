@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Security.Principal;
-using Tribitgroup.Framewok.Identity.Shared.Models;
+using Tribitgroup.Framewok.Identity.Models;
 using Tribitgroup.Framewok.Shared.Interfaces;
 
 namespace Tribitgroup.Framewok.Identity.API

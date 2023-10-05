@@ -10,9 +10,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Tribitgroup.Framewok.Identity.Shared.DTO;
-using Tribitgroup.Framewok.Identity.Shared.Exceptions;
-using Tribitgroup.Framewok.Identity.Shared.Interfaces;
+using Tribitgroup.Framewok.Identity.Interfaces;
 using Tribitgroup.Framewok.Identity.Shared.Models;
+using Tribitgroup.Framewok.Identity.Models;
 
 namespace Tribitgroup.Framewok.Identity.API.Controllers
 {

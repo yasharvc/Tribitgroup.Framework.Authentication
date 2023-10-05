@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Tribitgroup.Framewok.Shared\Tribitgroup.Framewok.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\Repositories\" />
+  </ItemGroup>
+
 </Project>

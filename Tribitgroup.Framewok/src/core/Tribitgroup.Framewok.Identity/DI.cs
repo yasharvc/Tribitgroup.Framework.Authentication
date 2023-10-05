@@ -1,24 +1,21 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Tribitgroup.Framewok.Identity.Interfaces;
+using Tribitgroup.Framewok.Identity.Models;
 using Tribitgroup.Framewok.Identity.Server;
 using Tribitgroup.Framewok.Identity.Shared.Consts;
 using Tribitgroup.Framewok.Identity.Shared.DTO;
 using Tribitgroup.Framewok.Identity.Shared.Exceptions;
-using Tribitgroup.Framewok.Identity.Shared.Interfaces;
 using Tribitgroup.Framewok.Identity.Shared.Models;
 
 namespace Tribitgroup.Framewok.Identity

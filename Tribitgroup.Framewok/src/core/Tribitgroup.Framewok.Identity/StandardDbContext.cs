@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Tribitgroup.Framewok.Identity.Shared.Consts;
-using Tribitgroup.Framewok.Identity.Shared.Models;
+using Tribitgroup.Framewok.Identity.Models;
 
 namespace Tribitgroup.Framewok.Identity
 {

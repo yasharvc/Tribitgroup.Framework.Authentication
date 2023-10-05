@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Tribitgroup.Framewok.Shared.Extensions;
 
-namespace Tribitgroup.Framewok.Identity.Shared.Models
+namespace Tribitgroup.Framewok.Identity.Models
 {
     public class ApplicationRole : IdentityRole<Guid> {
         public ApplicationRole()

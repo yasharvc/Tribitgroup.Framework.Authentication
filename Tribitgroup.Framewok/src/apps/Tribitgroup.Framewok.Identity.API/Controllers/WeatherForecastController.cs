@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Tribitgroup.Framewok.Identity.Shared.Interfaces;
-using Tribitgroup.Framewok.Identity.Shared.Models;
+using Tribitgroup.Framewok.Identity.Interfaces;
+using Tribitgroup.Framewok.Identity.Models;
 using Tribitgroup.Framewok.Shared.Extensions;
 using Tribitgroup.Framewok.Shared.Interfaces;
 

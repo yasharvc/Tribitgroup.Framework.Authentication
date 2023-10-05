@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using Tribitgroup.Framewok.Shared.Entities.Interfaces;
 using Tribitgroup.Framewok.Shared.Extensions;
 
-namespace Tribitgroup.Framewok.Identity.Shared.Models
+namespace Tribitgroup.Framewok.Identity.Models
 {
     public class ApplicationUser : IdentityUser<Guid>, IEntity<Guid>
     {
