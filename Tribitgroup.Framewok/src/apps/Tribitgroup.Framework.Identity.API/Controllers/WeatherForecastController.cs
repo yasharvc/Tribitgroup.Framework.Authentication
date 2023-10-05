@@ -61,8 +61,8 @@ namespace Tribitgroup.Framework.Identity.API.Controllers
                 },
                 Tenants = new[]
                 {
-                    new Tenant("", "T1","Tenant 1"),
-                    new Tenant("", "T2","Tenant 2"),
+                    new Tenant("T1","Tenant 1"),
+                    new Tenant("T2","Tenant 2"),
 
                 }
             });
