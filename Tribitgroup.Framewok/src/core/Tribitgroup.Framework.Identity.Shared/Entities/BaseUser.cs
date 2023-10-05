@@ -1,8 +1,8 @@
-﻿using Tribitgroup.Framework.Shared.Entities;
+﻿using Tribitgroup.Framework.Shared.Types;
 
 namespace Tribitgroup.Framework.Identity.Shared.Entities
 {
-    public abstract class BaseUser : FullAuditEntity
+    public abstract class BaseUser : AuditedAggregateRoot
     {
     }
 }

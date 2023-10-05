@@ -1,6 +1,19 @@
-﻿using Tribitgroup.Framework.Shared.Entities;
+﻿using Tribitgroup.Framework.Shared.Types;
 
 namespace Tribitgroup.Framework.Identity.Models
 {
-    public record Tenant(string PathToParent, string ShortKey, string Title) : EntityRecord { }
+    public class Tenant : Entity {
+        public string PathToParent { get; set; } = string.Empty;
+        public string ShortKey { get; set; } = string.Empty;
+        public string Title{get;set;} = string.Empty;
+
+        public Tenant(string pathToParent, string shortKey, string title)
+        {
+            PathToParent = pathToParent;
+            ShortKey = shortKey;
+            Title = title;
+        }
+
+        public Tenant(string shortKey, string title) : this("", shortKey, title) { }
+    }
 }

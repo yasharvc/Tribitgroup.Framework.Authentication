@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Tribitgroup.Framework.Shared.Entities;
+using Tribitgroup.Framework.Shared.Types;
 
 namespace Tribitgroup.Framework.Identity.Models
 {

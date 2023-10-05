@@ -1,4 +1,4 @@
-﻿namespace Tribitgroup.Framework.Shared.Entities.Interfaces
+﻿namespace Tribitgroup.Framework.Shared.Interfaces
 {
     public interface IHasTenant
     {

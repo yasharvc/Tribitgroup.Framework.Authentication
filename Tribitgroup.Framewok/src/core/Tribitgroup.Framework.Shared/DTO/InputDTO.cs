@@ -1,4 +1,4 @@
-﻿using Tribitgroup.Framework.Shared.Entities;
+﻿using Tribitgroup.Framework.Shared.Types;
 
 namespace Tribitgroup.Framework.Shared.DTO
 {
