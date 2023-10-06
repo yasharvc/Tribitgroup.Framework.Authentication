@@ -13,15 +13,15 @@ namespace Tribitgroup.Framework.Shared.Types
     }
     public class Entity<T> : IEntity<T> where T : notnull
     {
-        IDictionary<string,string> TableNames { get; set; } = new Dictionary<string,string>();
+        IDictionary<Type,string> TableNames { get; set; } = new Dictionary<Type,string>();
         public T Id { get; set; }
         public string GetTableName()
         {
-            var name = GetType().FullName ?? "";
-            if (TableNames.TryGetValue(name, out string? value))
+            var type = GetType();
+            if (TableNames.TryGetValue(type, out string? value))
                 return value;
             dynamic? tableAttr = GetType().GetCustomAttributes(false).SingleOrDefault(attr => attr.GetType().Name == nameof(TableAttribute));
-            var res = TableNames[name] = tableAttr is null ? GetType().Name : tableAttr.Name;
+            var res = TableNames[type] = tableAttr is null ? GetType().Name : tableAttr.Name;
             return res;
         }
     }
