@@ -19,13 +19,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Ident
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Identity.Shared", "src\core\Tribitgroup.framework.Identity.Shared\Tribitgroup.Framework.Identity.Shared.csproj", "{9A38020D-3A80-4B92-B6CE-F605BBA0C15B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.framework.Identity.Tests", "test\Tribitgroup.framework.Identity.Tests\Tribitgroup.framework.Identity.Tests.csproj", "{C7EE7DFC-59E2-4649-9BCE-EA4707885984}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Identity.Tests", "test\Tribitgroup.Framework.Identity.Tests\Tribitgroup.Framework.Identity.Tests.csproj", "{C7EE7DFC-59E2-4649-9BCE-EA4707885984}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTestApp", "src\apps\ConsoleTestApp\ConsoleTestApp.csproj", "{F16F3CD5-C407-43F2-BB5C-AA7D1C411CCE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Identity.Server", "src\core\Tribitgroup.framework.Identity.Server\Tribitgroup.Framework.Identity.Server.csproj", "{120704FF-8A95-48D8-B31D-19A4600E9EEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framework.Dapper", "src\core\Tribitgroup.Framework.Dapper\Tribitgroup.Framework.Dapper.csproj", "{A4809E38-A787-41CF-856A-8879F964D7FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framework.DB.Relational.Helper", "src\core\Tribitgroup.Framework.DB.Relational.Helper\Tribitgroup.Framework.DB.Relational.Helper.csproj", "{E005A20B-1CE2-47B7-9AC2-344102346745}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{A4809E38-A787-41CF-856A-8879F964D7FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4809E38-A787-41CF-856A-8879F964D7FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4809E38-A787-41CF-856A-8879F964D7FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E005A20B-1CE2-47B7-9AC2-344102346745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E005A20B-1CE2-47B7-9AC2-344102346745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E005A20B-1CE2-47B7-9AC2-344102346745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E005A20B-1CE2-47B7-9AC2-344102346745}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +86,7 @@ Global
 		{F16F3CD5-C407-43F2-BB5C-AA7D1C411CCE} = {CE7C692C-CA60-40BC-9081-2DB0CAA936BD}
 		{120704FF-8A95-48D8-B31D-19A4600E9EEA} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
 		{A4809E38-A787-41CF-856A-8879F964D7FE} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
+		{E005A20B-1CE2-47B7-9AC2-344102346745} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71091628-2E7E-4C66-8215-8DA5776EAA26}

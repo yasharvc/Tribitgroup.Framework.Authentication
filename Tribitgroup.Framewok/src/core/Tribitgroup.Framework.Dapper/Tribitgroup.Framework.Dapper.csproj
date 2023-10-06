@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tribitgroup.framework.Shared\Tribitgroup.Framework.Shared.csproj" />
+    <ProjectReference Include="..\Tribitgroup.Framework.Shared\Tribitgroup.Framework.Shared.csproj" />
   </ItemGroup>
 
 </Project>
