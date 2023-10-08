@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
@@ -48,7 +47,27 @@ namespace Tribitgroup.Framework.Dapper
 
         public async Task<IEnumerable<TEntity>> InsertManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default)
         {
-            //await ExecuteAsync(unitOfWorkHost, queries.GetSql(), queries.Param, cancellationToken);
+            var lst = new List<string>();
+            var param = new Dictionary<string, object>();
+            var cols = Sample.GetColumnNames();
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext ?? ConnectionProvider.DbContext);
+            var columnNames = string.Join(", ", cols.Select(p => p));
+            int index = 0;
+
+            foreach (var entity in entities)
+            {
+                var valueParameters = string.Join(", ", cols.Select(p => $"@{p}{index}"));
+                var dict = cols.Select(m => m).ToDictionary(n => $"{n}{index}", m => entity.GetValue(m));
+                foreach (var item in dict)
+                {
+                    param[item.Key] = item.Value;
+                }
+
+                var query = $"INSERT INTO {tableName} ({columnNames}) VALUES ({valueParameters});";
+                lst.Add(query);
+                index++;
+            }
+            await ExecuteAsync(unitOfWorkHost, string.Join("\r\n", lst), param, cancellationToken);
             return entities;
         }
 

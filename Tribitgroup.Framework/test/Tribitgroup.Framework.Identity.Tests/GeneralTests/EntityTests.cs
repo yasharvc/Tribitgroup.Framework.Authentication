@@ -55,10 +55,11 @@ namespace Tribitgroup.Framework.Identity.Tests.GeneralTests
         [Fact]
         public async Task Test()
         {
-            var product = new Product { Name = "P1" };
+            var p1 = new Product { Name = "P1" };
+            var p2 = new Product { Name = "P2" };
             var repo = new DapperCUDRepository<Product>(new DapperCUDConnectionProvider<Product>(GetDbContext()));
 
-            await repo.InsertOneAsync(product);
+            await repo.InsertManyAsync(new List<Product> { p1, p2 });
 
             var res = await GetDbContext().Productasdasds.ToListAsync();
 

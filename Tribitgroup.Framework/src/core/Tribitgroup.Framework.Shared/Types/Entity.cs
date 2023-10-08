@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using Tribitgroup.Framework.Shared.Extensions;
