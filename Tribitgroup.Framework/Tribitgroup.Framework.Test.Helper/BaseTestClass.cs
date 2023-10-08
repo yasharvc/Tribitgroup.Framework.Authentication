@@ -16,7 +16,7 @@ namespace Tribitgroup.Framework.Test.Helper
             var services = new ServiceCollection();
             AddServices(services);
             services.AddDbContext<TDbContext>(options =>
-                options.UseSqlite($"DataSource={databaseName};Version=3;BinaryGuid=False")
+                options.UseSqlite($"Data Source={databaseName};")
             );
 
             ServiceProvider = services.BuildServiceProvider();

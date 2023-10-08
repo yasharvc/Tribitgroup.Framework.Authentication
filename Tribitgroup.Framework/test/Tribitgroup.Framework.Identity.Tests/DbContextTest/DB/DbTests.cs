@@ -18,43 +18,48 @@ namespace Tribitgroup.Framework.Identity.Tests.DbContextTest.DB
         public void GetAsColumns_Should_List_All_Inhereted_Props()
         {
             var lst = new BookTemp().GetAsColumns();
+            var tableName = new BookTemp().GetTableName();
+
 
             lst.ShouldContain(m => m.ColumnName == nameof(Book.Name));
             lst.ShouldContain(m => m.ColumnName == nameof(Book.Id));
             lst.ShouldContain(m => m.ColumnName == nameof(BookTemp.IsTemp));
             lst.ShouldNotContain(m => m.ColumnName == "Age");
-            lst.ShouldContain(m => m.TableName == new BookTemp().GetTableName());
+            lst.ShouldContain(m => m.TableName == tableName);
         }
         [Fact]
         public void GetAsColumns_Should_List_All_Public_Props()
         {
             var lst = new Book().GetAsColumns();
+            var tableName = new Book().GetTableName();
 
             lst.ShouldContain(m => m.ColumnName == nameof(Book.Name));
             lst.ShouldContain(m => m.ColumnName == nameof(Book.Id));
             lst.ShouldNotContain(m => m.ColumnName == "Age");
-            lst.ShouldContain(m => m.TableName == new Book().GetTableName());
+            lst.ShouldContain(m => m.TableName == tableName);
         }
 
         [Fact]
         public void GetAsColumns_ByType_Should_List_All_Public_Props()
         {
             var lst = typeof(Book).GetAsColumns();
+            var tableName = new Book().GetTableName();
 
             lst.ShouldContain(m => m.ColumnName == nameof(Book.Name));
             lst.ShouldContain(m => m.ColumnName == nameof(Book.Id));
             lst.ShouldNotContain(m => m.ColumnName == "Age");
-            lst.ShouldContain(m => m.TableName == new Book().GetTableName());
+            lst.ShouldContain(m => m.TableName == tableName);
         }
         [Fact]
         public void GetAsColumns_ByGenericType_Should_List_All_Public_Props()
         {
             var lst = QueryExtensions.GetAsColumns<Book>();
+            var tableName = new Book().GetTableName();
 
             lst.ShouldContain(m => m.ColumnName == nameof(Book.Name));
             lst.ShouldContain(m => m.ColumnName == nameof(Book.Id));
             lst.ShouldNotContain(m => m.ColumnName == "Age");
-            lst.ShouldContain(m => m.TableName == new Book().GetTableName());
+            lst.ShouldContain(m => m.TableName == tableName);
         }
         [Fact]
         public void TestQuery()
