@@ -1,4 +1,5 @@
-﻿using Tribitgroup.Framework.Shared.Interfaces;
+﻿using Tribitgroup.Framework.DB.Relational.Helper.Extensions;
+using Tribitgroup.Framework.Shared.Interfaces;
 
 namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
 {

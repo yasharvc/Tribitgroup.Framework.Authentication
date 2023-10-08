@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
+using Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder;
 using Tribitgroup.Framework.Shared.Enums;
 using Tribitgroup.Framework.Shared.Interfaces;
 using Tribitgroup.Framework.Shared.Types;
 
-namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
+namespace Tribitgroup.Framework.DB.Relational.Helper.Extensions
 {
     public static class QueryExtensions
     {

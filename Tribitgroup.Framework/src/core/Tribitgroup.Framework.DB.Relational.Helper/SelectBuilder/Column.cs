@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Tribitgroup.Framework.DB.Relational.Helper.Extensions;
 using Tribitgroup.Framework.Shared.Interfaces;
 
 namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
