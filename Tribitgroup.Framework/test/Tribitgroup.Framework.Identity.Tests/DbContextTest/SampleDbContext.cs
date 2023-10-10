@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper.Contrib.Extensions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Tribitgroup.Framework.Identity.Tests.DbContextTest
         public DateTime DateOfBirth { get; set; }
     }
 
+    //[Table("Orders")]
     public class Order : AggregateRoot
     {
         public Guid UserId { get; set; }
@@ -22,6 +24,7 @@ namespace Tribitgroup.Framework.Identity.Tests.DbContextTest
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 
+    //[Table("OrderDetails")]
     public class OrderDetail : Entity
     {
         public Guid OrderId { get; set; }
