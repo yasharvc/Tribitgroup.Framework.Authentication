@@ -136,8 +136,13 @@ namespace Tribitgroup.Framework.Shared.Extensions
         public static void SetMemberValue<T>(this T entity, Expression<Func<T, object>> expression, object? value)
         {
             var propName = entity.GetMemberName(expression);
+            entity.SetMemberValue(propName, value);
+        }
 
-            entity?.GetType().GetProperty(propName)?.SetValue(entity, value);
+        public static void SetMemberValue<T>(this T entity, string propName, object? value)
+        {
+            var prop = entity?.GetType().GetProperty(propName);
+            prop?.SetValue(entity, entity.ChangeTo(prop.PropertyType, value));
         }
 
         public static void AddValueToListMember<T>(this T entity, Expression<Func<T, object>> expression, params object[] values)

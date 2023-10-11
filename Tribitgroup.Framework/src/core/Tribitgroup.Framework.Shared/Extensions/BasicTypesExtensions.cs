@@ -14,5 +14,83 @@ namespace Tribitgroup.Framework.Shared.Extensions
         {
             return type.IsArray || (type.IsGenericType && type.GetInterfaces().Contains(typeof(IEnumerable)));
         }
+
+        public static bool IsArrayOrList<T>(this T instance)
+        {
+            var type= typeof(T);
+            return type.IsArray || (type.IsGenericType && type.GetInterfaces().Contains(typeof(IEnumerable)));
+        }
+
+        public static object? ChangeTo<T>(this T instance, Type toType, object value)
+        {
+            if (value == null || value == DBNull.Value)
+            {
+                return default;
+            }
+
+            if (toType.IsEnum)
+            {
+                return Enum.Parse(toType, value.ToString() ?? "");
+            }
+
+            if (toType == typeof(Guid))
+            {
+                return new Guid(value.ToString() ?? "");
+            }
+
+            if (toType == typeof(DateTime))
+            {
+                if (DateTime.TryParse(value.ToString(), out DateTime dateTime))
+                {
+                    return dateTime;
+                }
+                return default;
+            }
+
+            try
+            {
+                return Convert.ChangeType(value, toType);
+            }
+            catch
+            {
+                return default(T);
+            }
+        }
+
+        public static T? To<T>(this object value)
+        {
+            if (value == null || value == DBNull.Value)
+            {
+                return default;
+            }
+
+            if (typeof(T).IsEnum)
+            {
+                return (T)Enum.Parse(typeof(T), value.ToString() ?? "");
+            }
+
+            if (typeof(T) == typeof(Guid))
+            {
+                return (T)(object)new Guid(value.ToString() ?? "");
+            }
+
+            if (typeof(T) == typeof(DateTime))
+            {
+                if (DateTime.TryParse(value.ToString(), out DateTime dateTime))
+                {
+                    return (T)(object)dateTime;
+                }
+                return default;
+            }
+
+            try
+            {
+                return (T)Convert.ChangeType(value, typeof(T));
+            }
+            catch
+            {
+                return default;
+            }
+        }
     }
 }

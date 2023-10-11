@@ -2,6 +2,8 @@
 using System.Data;
 using Tribitgroup.Framework.Shared.Interfaces;
 using Tribitgroup.Framework.Shared.Types;
+using Dapper;
+using Tribitgroup.Framework.Shared.Extensions;
 
 namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
 {
@@ -137,12 +139,40 @@ namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
             return $"SELECT {(string.IsNullOrEmpty(selectCols) ? "*" : selectCols)} FROM {GetFromTablePart()} {joins} {where}";
         }
 
-        //public Task<IEnumerable<TDTO>> RunAsync<TDTO>(
-        //    IDbConnection connection,
-        //    params Func<Task,Column>)
-        //{
+        public async Task<IEnumerable<TDTO>> RunAsync<TDTO>(
+            IDbConnection connection,
+            QueryMapper<TDTO> mapper)
+            where TDTO : Entity, new()
+        {
+            var rawData = await connection.QueryAsync<object>(ToString());
+            var res = new List<TDTO>();
 
-        //}
+            foreach (var item in rawData.ToList())
+            {
+                var myDict = (IDictionary<string,object>)item;
+                var colDict = new Dictionary<Column,object>();
+                var tempDTO = new TDTO();
+
+                foreach (var key in myDict.Keys)
+                {
+                    var selectedMapper = mapper.GetMapperFor(key);
+                    if (selectedMapper == null)
+                        continue;
+                    var col = SelectedColumns.SingleOrDefault(m => (string.IsNullOrEmpty(m.Alias) && m.ColumnName == key) || m.Alias == key);
+                    if(col != null)
+                        colDict.Add(col, myDict[key]);
+
+                    try
+                    {
+                        tempDTO.SetMemberValue(selectedMapper.PropertyName, myDict[key]);
+                    }
+                    catch { }
+                }
+                res.Add(tempDTO);
+            }
+
+            return res;
+        }
 
         public enum ColumnType
         {

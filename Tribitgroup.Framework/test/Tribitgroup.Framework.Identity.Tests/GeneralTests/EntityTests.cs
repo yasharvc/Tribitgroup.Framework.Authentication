@@ -150,6 +150,9 @@ namespace Tribitgroup.Framework.Identity.Tests.GeneralTests
             var lst = await conn.QueryAsync(query);
             lst.ShouldNotBeEmpty();
 
+            var col1 = Column.From<OrderDetail>(m => m.Count);
+            var priceCol = Column.From<OrderDetail>(m => m.Price);
+
             var qry = Query.From<DbContextTest.Order>(GetDbContext())
                 .InnerJoin<OrderDetail, DbContextTest.Order>(b=>b.OrderId)
                 .SelectColumns(() =>
@@ -157,18 +160,28 @@ namespace Tribitgroup.Framework.Identity.Tests.GeneralTests
                     return new List<Column>
                     {
                         Column.From<DbContextTest.Order>(m=>m.Id, "Order_Id"),
-                        Column.From<OrderDetail>(m=>m.Count),
-                        Column.From<OrderDetail>(m=>m.Price),
+                        col1,
+                        priceCol,
                         Column.From<OrderDetail>(m=>m.ItemName)
                     };
                 });
 
-
+            var ttt = await qry.RunAsync(conn, 
+                QueryMapper<TestDTO>
+                .For(dto => dto.Count, col1)
+                .For(dto => dto.Price, priceCol)
+                );
 
             var res2 = await conn.QueryAsync(qry.ToString());
 
             Assert.NotNull(first);
             first.OrderDetails.ShouldNotBeEmpty();
         }
+    }
+    class TestDTO : Entity
+    {
+        public Guid OrderId { get; set; }
+        public int Count { get; set; }
+        public decimal Price { get; set; }
     }
 }
