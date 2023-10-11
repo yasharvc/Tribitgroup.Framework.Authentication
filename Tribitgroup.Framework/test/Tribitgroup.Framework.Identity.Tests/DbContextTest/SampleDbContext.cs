@@ -20,7 +20,7 @@ namespace Tribitgroup.Framework.Identity.Tests.DbContextTest
     public class Order : AggregateRoot
     {
         public Guid UserId { get; set; }
-        public User User { get; set; }
+        public GeneralTests.User User { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 

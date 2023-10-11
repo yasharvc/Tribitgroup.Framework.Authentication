@@ -21,6 +21,26 @@ namespace Tribitgroup.Framework.Shared.Extensions
             return type.IsArray || (type.IsGenericType && type.GetInterfaces().Contains(typeof(IEnumerable)));
         }
 
+        public static bool IsBasicType(this Type type)
+        {
+            return
+                type == typeof(int) ||
+                type == typeof(double) ||
+                type == typeof(char) ||
+                type == typeof(bool) ||
+                type == typeof(string) ||
+                type == typeof(byte) ||
+                type == typeof(short) ||
+                type == typeof(long) ||
+                type == typeof(float) ||
+                type == typeof(decimal) ||
+                type == typeof(Guid) ||
+                type == typeof(DateTime) ||
+                type == typeof(sbyte) ||
+                type == typeof(ushort) ||
+                type == typeof(uint);
+        }
+
         public static object? ChangeTo<T>(this T instance, Type toType, object value)
         {
             if (value == null || value == DBNull.Value)
@@ -92,5 +112,8 @@ namespace Tribitgroup.Framework.Shared.Extensions
                 return default;
             }
         }
+
+        public static Type? GetGenericTypeFromList(this Type type, string propName)
+            => type.GetProperty(propName)?.PropertyType.GenericTypeArguments[0];
     }
 }

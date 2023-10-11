@@ -141,16 +141,71 @@ namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
 
         public async Task<IEnumerable<TDTO>> RunAsync<TDTO>(
             IDbConnection connection,
+            Column idColumn,
             QueryMapper<TDTO> mapper)
             where TDTO : Entity, new()
         {
             var rawData = await connection.QueryAsync<object>(ToString());
-            var res = new List<TDTO>();
+            var res = new Dictionary<Guid,TDTO>();
 
             foreach (var item in rawData.ToList())
             {
-                var myDict = (IDictionary<string,object>)item;
-                var colDict = new Dictionary<Column,object>();
+                var valuesDict = (IDictionary<string, object>)item;
+                var id = valuesDict[string.IsNullOrEmpty(idColumn.Alias) ? idColumn.ColumnName : idColumn.Alias].To<Guid>();
+                var tempDTO = res.ContainsKey(id) ? res[id] : new TDTO { Id = id };
+
+                foreach (var key in valuesDict.Keys)
+                {
+                    var selectedMapper = mapper.GetMapperFor(key);
+                    if (selectedMapper == null)
+                        continue;
+
+                    var value = valuesDict[key];
+
+                    if (selectedMapper.IsListType)
+                    {
+
+                    }
+                    else if(selectedMapper.IsBasicType)
+                    {
+                        try
+                        {
+                            tempDTO.SetMemberValue(selectedMapper.PropertyName, value);
+                        }
+                        catch { }
+                    }
+                    else if(selectedMapper.IsObjectType)
+                    {
+                        try
+                        {
+                            var propNames = selectedMapper.PropertyName.Split('.');
+                            object obj = tempDTO;
+
+                            foreach (var prop in propNames.Take(propNames.Length-1))
+                            {
+                                var tempProp = obj.GetType().GetProperty(prop) ?? throw new Exception();
+                                var temp = tempProp?.GetValue(obj) ?? Activator.CreateInstance(tempProp.PropertyType);
+
+                                tempProp.SetValue(obj, temp);
+
+                                obj = obj.GetType().GetProperty(prop).GetValue(obj);
+                            }
+                            obj.SetMemberValue(propNames.Last(), value);
+
+                            //tempDTO.SetMemberValue(selectedMapper.PropertyName, value);
+                        }
+                        catch { }
+                    }
+                }
+
+                res[id] = tempDTO;
+            }
+
+            return res.Values;
+        }
+
+        /*
+         var myDict = (IDictionary<string,object>)item;
                 var tempDTO = new TDTO();
 
                 foreach (var key in myDict.Keys)
@@ -158,21 +213,29 @@ namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
                     var selectedMapper = mapper.GetMapperFor(key);
                     if (selectedMapper == null)
                         continue;
-                    var col = SelectedColumns.SingleOrDefault(m => (string.IsNullOrEmpty(m.Alias) && m.ColumnName == key) || m.Alias == key);
-                    if(col != null)
-                        colDict.Add(col, myDict[key]);
 
-                    try
+                    if (!selectedMapper.IsList)
                     {
-                        tempDTO.SetMemberValue(selectedMapper.PropertyName, myDict[key]);
+                        try
+                        {
+                            tempDTO.SetMemberValue(selectedMapper.PropertyName, myDict[key]);
+                        }
+                        catch { }
                     }
-                    catch { }
+                    else
+                    {
+                        var propNames = selectedMapper.PropertyName.Split('.');
+                        //Get other props and then save
+                        var newChild = Activator.CreateInstance(typeof(TDTO).GetGenericTypeFromList(propNames.First()) ?? throw new Exception());
+                        newChild.SetMemberValue(propNames.Last(), myDict[key]);
+                        tempDTO.AddValueToListMember(propNames.First(), newChild ?? throw new NullReferenceException());
+                    }
                 }
+                //Get first ID column
+                //sort items based on propnames and dots
+                //Dont add same tempDTO
                 res.Add(tempDTO);
-            }
-
-            return res;
-        }
+         */
 
         public enum ColumnType
         {

@@ -148,7 +148,10 @@ namespace Tribitgroup.Framework.Shared.Extensions
         public static void AddValueToListMember<T>(this T entity, Expression<Func<T, object>> expression, params object[] values)
         {
             var propName = entity.GetMemberName(expression);
-
+            AddValueToListMember(entity, propName, values);
+        }
+        public static void AddValueToListMember<T>(this T entity, string propName, params object[] values)
+        {
             var prop = entity?.GetType().GetProperty(propName) ?? throw new Exception("Property is not accessable");
             if(prop.GetValue(entity) == null)
             {
@@ -171,6 +174,10 @@ namespace Tribitgroup.Framework.Shared.Extensions
         }
 
         public static string GetMemberName<T>(this T instance, Expression<Func<T, object>> expression)
+        {
+            return GetMemberName(expression.Body);
+        }
+        public static string GetMemberName<T,I>(this T instance, Expression<Func<T, I>> expression)
         {
             return GetMemberName(expression.Body);
         }
