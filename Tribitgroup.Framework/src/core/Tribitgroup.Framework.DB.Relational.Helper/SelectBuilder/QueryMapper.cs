@@ -8,7 +8,6 @@ namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
     public class QueryMapperInfo<TDTO> where TDTO : class
     {
         public Column Column { get; private set; }
-        Expression<Func<TDTO, Dictionary<Column, object>, object>> ActionOnRow { get; set; }
         public Expression<Func<TDTO, object>> PropertySelector { get; private set; }
         public string PropertyName { get; protected set; } = string.Empty;
         public bool IsListType { get; private set; }

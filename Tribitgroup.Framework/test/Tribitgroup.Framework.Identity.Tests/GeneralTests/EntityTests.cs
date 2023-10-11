@@ -157,6 +157,7 @@ namespace Tribitgroup.Framework.Identity.Tests.GeneralTests
             var priceCol = Column.From<OrderDetail>(m => m.Price);
             var userIdCol = Column.From<DbContextTest.Order>(m => m.UserId);
             var itemNameCol = Column.From<OrderDetail>(m => m.ItemName);
+            var detailIdCol = Column.From<OrderDetail>(m => m.Id,"Detail_Id");
             var orderIdCol = Column.From<DbContextTest.Order>(m => m.Id, "Order_Id");
             var userNameCol = Column.From<User>(m => m.Name, "User_Name");
 
@@ -172,7 +173,8 @@ namespace Tribitgroup.Framework.Identity.Tests.GeneralTests
                         priceCol,
                         itemNameCol,
                         userIdCol,
-                        userNameCol
+                        userNameCol,
+                        detailIdCol
                     };
                 });
 
@@ -180,6 +182,10 @@ namespace Tribitgroup.Framework.Identity.Tests.GeneralTests
                 orderIdCol,
                 QueryMapper<TestDTO>
                     .For(dto => dto.Id, orderIdCol)
+                    .ForList(dto => dto.Items, item => item.Count, countCol)
+                    .ForList(dto => dto.Items, item => item.Price, priceCol)
+                    .ForList(dto => dto.Items, item => item.Name, itemNameCol)
+                    .ForList(dto => dto.Items, item => item.Id, detailIdCol)
                     .ForObjectMember(dto=>dto.User,d=>d.Name,userNameCol)
                     .ForObjectMember(dto=>dto.User,d=>d.Id,userIdCol)
                 );
@@ -213,9 +219,9 @@ namespace Tribitgroup.Framework.Identity.Tests.GeneralTests
     }
     class TestDetailDTO : Entity
     {
-        public Guid OrderId { get; set; }
         public int Count { get; set; }
         public decimal Price { get; set; }
+        public string Name { get; set; }
     }
 
     class TestDTO :Entity 

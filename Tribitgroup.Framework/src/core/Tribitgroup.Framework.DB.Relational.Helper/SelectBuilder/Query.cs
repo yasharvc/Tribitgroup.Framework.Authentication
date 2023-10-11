@@ -153,6 +153,7 @@ namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
                 var valuesDict = (IDictionary<string, object>)item;
                 var id = valuesDict[string.IsNullOrEmpty(idColumn.Alias) ? idColumn.ColumnName : idColumn.Alias].To<Guid>();
                 var tempDTO = res.ContainsKey(id) ? res[id] : new TDTO { Id = id };
+                var listDict = new Dictionary<string, object>();
 
                 foreach (var key in valuesDict.Keys)
                 {
@@ -164,7 +165,41 @@ namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
 
                     if (selectedMapper.IsListType)
                     {
+                        try
+                        {
+                            var propNames = selectedMapper.PropertyName.Split('.');
+                            object obj = tempDTO;
 
+                            //Create List if there is no array
+                            var tempProp = obj.GetType().GetProperty(propNames.First()) ?? throw new Exception();
+                            var temp = tempProp?.GetValue(obj) ?? Activator.CreateInstance(tempProp.PropertyType);
+                            var genericType = obj.GetType().GetGenericTypeFromList(propNames.First());
+                            var genericItem = listDict.ContainsKey(propNames.First())
+                                ? listDict[propNames.First()]
+                                : Activator.CreateInstance(genericType);
+
+
+                            tempProp.SetValue(obj, temp);
+
+                            genericItem.SetMemberValue(propNames.Last(), value);
+
+                            //foreach (var prop in propNames.Skip(1).Take(propNames.Length - 1))
+                            //{
+                            //    var tempProp = obj.GetType().GetProperty(prop) ?? throw new Exception();
+                            //    var temp = tempProp?.GetValue(obj) ?? Activator.CreateInstance(tempProp.PropertyType);
+
+                            //    tempProp.SetValue(obj, temp);
+
+                            //    obj = obj.GetType().GetProperty(prop).GetValue(obj);
+                            //}
+                            //obj.SetMemberValue(propNames.Last(), value);
+
+                            //obj.AddValueToListMember(propNames.First(), genericItem);
+                            //How to know the current 
+                            if(!listDict.ContainsKey(propNames.First()))
+                                listDict[propNames.First()] = genericItem;
+                        }
+                        catch { }
                     }
                     else if(selectedMapper.IsBasicType)
                     {
@@ -191,11 +226,14 @@ namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
                                 obj = obj.GetType().GetProperty(prop).GetValue(obj);
                             }
                             obj.SetMemberValue(propNames.Last(), value);
-
-                            //tempDTO.SetMemberValue(selectedMapper.PropertyName, value);
                         }
                         catch { }
                     }
+                }
+
+                foreach (var listData in listDict)
+                {
+                    tempDTO.AddValueToListMember(listData.Key, listData.Value);
                 }
 
                 res[id] = tempDTO;
