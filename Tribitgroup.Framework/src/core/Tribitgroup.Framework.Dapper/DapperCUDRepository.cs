@@ -79,7 +79,27 @@ namespace Tribitgroup.Framework.Dapper
 
         public async Task<IEnumerable<TEntity>> UpdateManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default, Expression<Func<TEntity, object>>? includes = null)
         {
-            //await ExecuteAsync(unitOfWorkHost, queries.GetSql(), queries.Param, cancellationToken);
+            var lst = new List<string>();
+            var param = new Dictionary<string, object>();
+            var cols = Sample.GetColumnNames();
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext ?? ConnectionProvider.DbContext);
+            
+            int index = 0;
+
+            foreach (var entity in entities)
+            {
+                var setParameters = string.Join(", ", cols.Where(p => p != nameof(entity.Id)).Select(p => $"{p}=@{p}{index}"));
+                var dict = cols.Select(m => m).ToDictionary(n => $"{n}{index}", m => entity.GetValue(m));
+                foreach (var item in dict)
+                {
+                    param[item.Key] = item.Value;
+                }
+
+                var query = $"UPDATE {tableName} SET {setParameters} WHERE {nameof(entity.Id)} = @{nameof(entity.Id)}{index};";
+                lst.Add(query);
+                index++;
+            }
+            await ExecuteAsync(unitOfWorkHost, string.Join("\r\n", lst), param, cancellationToken);
             return entities;
         }
 
