@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
-namespace Tribitgroup.Framework.Identity.Shared.Extensions
+namespace Tribitgroup.Framework.Identity.Web
 {
     public static class HttpContextExtensions
     {

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Principal;
-using Tribitgroup.Framework.Identity.Shared.Extensions;
 
-namespace Tribitgroup.Framework.Identity.Middlewares
+namespace Tribitgroup.Framework.Identity.Web.Middlewares
 {
     internal class ClientAuthenticatorMiddleware
     {
