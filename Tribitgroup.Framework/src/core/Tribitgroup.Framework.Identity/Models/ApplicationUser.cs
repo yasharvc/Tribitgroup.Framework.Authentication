@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using Tribitgroup.Framework.Shared.Extensions;
 using Tribitgroup.Framework.Shared.Interfaces;
@@ -16,9 +17,19 @@ namespace Tribitgroup.Framework.Identity.Models
             Id = BasicTypesExtensions.GetSequentialGuid();
         }
 
-        public string GetTableName()
+        public string GetTableName(DbContext? dbContext = null)
         {
-            return "AppUsers";
+            return "AspNetUsers";
+        }
+
+        public object? GetValue(string propName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetColumnNames()
+        {
+            return new List<string>();
         }
     }
 }

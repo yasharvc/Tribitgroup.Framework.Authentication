@@ -1,24 +1,24 @@
-﻿using System.Diagnostics;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
+using Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder;
 using Tribitgroup.Framework.Shared.Enums;
 using Tribitgroup.Framework.Shared.Interfaces;
 using Tribitgroup.Framework.Shared.Types;
 
-namespace Tribitgroup.Framework.DB.Relational.Helper.SelectBuilder
+namespace Tribitgroup.Framework.DB.Relational.Helper.Extensions
 {
     public static class QueryExtensions
     {
         public static IEnumerable<Column> GetAsColumns<T>(this Entity<T> s) where T : notnull
         {
             var res = new List<Column>();
-            var props = s.GetType().GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
-            foreach (var prop in props)
+            var cols = s.GetColumnNames();
+            foreach (var col in cols)
             {
                 res.Add(new Column
                 {
                     TableName = s.GetTableName(),
-                    ColumnName = prop.Name,
+                    ColumnName = col,
                 });
             }
             return res;

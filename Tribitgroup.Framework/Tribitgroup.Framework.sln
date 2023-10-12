@@ -25,9 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTestApp", "src\apps\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Identity.Server", "src\core\Tribitgroup.framework.Identity.Server\Tribitgroup.Framework.Identity.Server.csproj", "{120704FF-8A95-48D8-B31D-19A4600E9EEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framework.Dapper", "src\core\Tribitgroup.Framework.Dapper\Tribitgroup.Framework.Dapper.csproj", "{A4809E38-A787-41CF-856A-8879F964D7FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Dapper", "src\core\Tribitgroup.Framework.Dapper\Tribitgroup.Framework.Dapper.csproj", "{A4809E38-A787-41CF-856A-8879F964D7FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framework.DB.Relational.Helper", "src\core\Tribitgroup.Framework.DB.Relational.Helper\Tribitgroup.Framework.DB.Relational.Helper.csproj", "{E005A20B-1CE2-47B7-9AC2-344102346745}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.DB.Relational.Helper", "src\core\Tribitgroup.Framework.DB.Relational.Helper\Tribitgroup.Framework.DB.Relational.Helper.csproj", "{E005A20B-1CE2-47B7-9AC2-344102346745}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framework.Test.Helper", "Tribitgroup.Framework.Test.Helper\Tribitgroup.Framework.Test.Helper.csproj", "{E97B802F-1B7D-41D0-A0A5-828037D7DE12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{E005A20B-1CE2-47B7-9AC2-344102346745}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E005A20B-1CE2-47B7-9AC2-344102346745}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E005A20B-1CE2-47B7-9AC2-344102346745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E97B802F-1B7D-41D0-A0A5-828037D7DE12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E97B802F-1B7D-41D0-A0A5-828037D7DE12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E97B802F-1B7D-41D0-A0A5-828037D7DE12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E97B802F-1B7D-41D0-A0A5-828037D7DE12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +93,7 @@ Global
 		{120704FF-8A95-48D8-B31D-19A4600E9EEA} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
 		{A4809E38-A787-41CF-856A-8879F964D7FE} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
 		{E005A20B-1CE2-47B7-9AC2-344102346745} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
+		{E97B802F-1B7D-41D0-A0A5-828037D7DE12} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71091628-2E7E-4C66-8215-8DA5776EAA26}
