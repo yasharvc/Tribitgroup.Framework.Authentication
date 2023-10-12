@@ -5,10 +5,7 @@ namespace Tribitgroup.Framework.Shared.Extensions
 {
     public static class BasicTypesExtensions
     {
-        public static Guid GetSequentialGuid()
-        {
-            return SequentialSqlGuidGenerator.Instance.NewGuid();
-        }
+        public static Guid GetSequentialGuid() => DateTime.UtcNow.ToGuid();
 
         public static bool IsArrayOrList(this Type type)
         {
@@ -115,5 +112,21 @@ namespace Tribitgroup.Framework.Shared.Extensions
 
         public static Type? GetGenericTypeFromList(this Type type, string propName)
             => type.GetProperty(propName)?.PropertyType.GenericTypeArguments[0];
+
+        public static Guid ToGuid(this long value)
+        {
+            byte[] guidData = new byte[16];
+            Array.Copy(BitConverter.GetBytes(value), guidData, 8);
+            return new Guid(guidData);
+        }
+
+        public static long ToLong(this Guid guid)
+        {
+            if (BitConverter.ToInt64(guid.ToByteArray(), 8) != 0)
+                throw new OverflowException("Value was either too large or too small for an Int64.");
+            return BitConverter.ToInt64(guid.ToByteArray(), 0);
+        }
+
+        public static Guid ToGuid(this DateTime date) => date.Ticks.ToGuid();
     }
 }
