@@ -22,7 +22,7 @@ namespace Tribitgroup.Framework.Shared.Types
         public IEnumerable<string> GetColumnNames()
         {
             var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
-            .Where(p => !p.PropertyType.IsArrayOrList());
+            .Where(p => p.PropertyType.IsBasicType());
 
             return properties.Select(p => p.Name);
         }
