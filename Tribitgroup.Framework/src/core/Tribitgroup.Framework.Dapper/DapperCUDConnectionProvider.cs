@@ -7,7 +7,7 @@ namespace Tribitgroup.Framework.Dapper
     public sealed class DapperCUDConnectionProvider<T> where T: class, IEntity<Guid>
     {
         IDbConnection? Connection { get; init; }
-        DbContext? DbContext { get; init; } = null;
+        public DbContext? DbContext { get; init; } = null;
         bool HasDirectConnection => Connection != null;
 
         public DapperCUDConnectionProvider(IDbConnection connection)

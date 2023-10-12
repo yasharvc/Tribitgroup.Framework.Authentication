@@ -12,13 +12,13 @@ namespace Tribitgroup.Framework.DB.Relational.Helper.Extensions
         public static IEnumerable<Column> GetAsColumns<T>(this Entity<T> s) where T : notnull
         {
             var res = new List<Column>();
-            var props = s.GetType().GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
-            foreach (var prop in props)
+            var cols = s.GetColumnNames();
+            foreach (var col in cols)
             {
                 res.Add(new Column
                 {
                     TableName = s.GetTableName(),
-                    ColumnName = prop.Name,
+                    ColumnName = col,
                 });
             }
             return res;

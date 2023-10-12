@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
@@ -13,7 +12,7 @@ namespace Tribitgroup.Framework.Dapper
         protected bool IsLogicalDelete { get; }
         DapperCUDConnectionProvider<TEntity> ConnectionProvider { get; }
         TEntity Sample { get; } = new TEntity();
-        ISqlGenerator<TEntity> SqlGenerator { get; } = new SqlGenerator<TEntity>();
+
         public DapperCUDRepository(DapperCUDConnectionProvider<TEntity> connectionProvider)
         {
             ConnectionProvider = connectionProvider;
@@ -24,10 +23,12 @@ namespace Tribitgroup.Framework.Dapper
         public async Task DeleteManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default)
         {
             var query = "";
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext);
+
             if (!IsLogicalDelete)
-                query = $"delete from {Sample.GetTableName()} where Id in (@Id)";
+                query = $"delete from {tableName} where Id in (@Id)";
             else
-                query = $"update {Sample.GetTableName()} set ${nameof(ILogicalDelete.Deleted)} = @value where Id in (@Id)";
+                query = $"update {tableName} set ${nameof(ILogicalDelete.Deleted)} = @value where Id in (@Id)";
             await ExecuteAsync(unitOfWorkHost, query, new { id = entities.Select(m => m.Id) , value = true}, cancellationToken);
             
         }
@@ -35,17 +36,38 @@ namespace Tribitgroup.Framework.Dapper
         public async Task DeleteOneAsync(Guid id, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default)
         {
             var query = "";
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext);
+
             if (!IsLogicalDelete)
-                query = $"delete from {Sample.GetTableName()} where Id in (@Id)";
+                query = $"delete from {tableName} where Id in (@Id)";
             else
-                query = $"update {Sample.GetTableName()} set ${nameof(ILogicalDelete.Deleted)} = @value where Id in (@Id)";
-            await ExecuteAsync(unitOfWorkHost, $"delete from {Sample.GetTableName()} where Id in (@Id)", new { id, value = true }, cancellationToken);
+                query = $"update {tableName} set ${nameof(ILogicalDelete.Deleted)} = @value where Id in (@Id)";
+            await ExecuteAsync(unitOfWorkHost, $"delete from {tableName} where Id in (@Id)", new { id, value = true }, cancellationToken);
         }
 
         public async Task<IEnumerable<TEntity>> InsertManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default)
         {
-            var queries = SqlGenerator.GetBulkInsert(entities);
-            await ExecuteAsync(unitOfWorkHost, queries.GetSql(), queries.Param, cancellationToken);
+            var lst = new List<string>();
+            var param = new Dictionary<string, object>();
+            var cols = Sample.GetColumnNames();
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext ?? ConnectionProvider.DbContext);
+            var columnNames = string.Join(", ", cols.Select(p => p));
+            int index = 0;
+
+            foreach (var entity in entities)
+            {
+                var valueParameters = string.Join(", ", cols.Select(p => $"@{p}{index}"));
+                var dict = cols.Select(m => m).ToDictionary(n => $"{n}{index}", m => entity.GetValue(m));
+                foreach (var item in dict)
+                {
+                    param[item.Key] = item.Value;
+                }
+
+                var query = $"INSERT INTO {tableName} ({columnNames}) VALUES ({valueParameters});";
+                lst.Add(query);
+                index++;
+            }
+            await ExecuteAsync(unitOfWorkHost, string.Join("\r\n", lst), param, cancellationToken);
             return entities;
         }
 
@@ -57,8 +79,7 @@ namespace Tribitgroup.Framework.Dapper
 
         public async Task<IEnumerable<TEntity>> UpdateManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default, Expression<Func<TEntity, object>>? includes = null)
         {
-            var queries = SqlGenerator.GetBulkUpdate(entities);
-            await ExecuteAsync(unitOfWorkHost, queries.GetSql(), queries.Param, cancellationToken);
+            //await ExecuteAsync(unitOfWorkHost, queries.GetSql(), queries.Param, cancellationToken);
             return entities;
         }
 
