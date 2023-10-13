@@ -9,6 +9,7 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities
         public bool IsLocked { get; protected set; } = false;
         public DateTime? LastLoginDateTime { get; protected set; }
         public virtual ICollection<UserToken> Tokens { get; set; } = new List<UserToken>();
+        public virtual ICollection<UserRefreshToken> RefreshTokens { get; set; } = new List<UserRefreshToken>();
         public virtual ICollection<UserLogin> Logins { get; set; } = new List<UserLogin>();
         public virtual ICollection<Tenant> Tenants { get; set; } = new List<Tenant>();
         public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
