@@ -108,6 +108,22 @@ namespace Tribitgroup.Framework.Dapper.Tests
             Assert.NotNull(lst.SingleOrDefault(x => x.Id == users.First().Id && x.Username == "yashar"));
         }
 
+        [Fact]
+        public async Task UpdateManyAsync_Should_Update_The_Data()
+        {
+            var users = await InsertTestUsersAsync();
+
+            users.First().Username = "yashar";
+            users.Last().Username = "Update user";
+
+            await DapperUserCUDRepo.UpdateManyAsync(users);
+
+            var lst = await GetDbContext().Users.ToListAsync();
+
+            lst.Count.ShouldBe(2);
+            Assert.NotNull(lst.SingleOrDefault(x => x.Id == users.First().Id && x.Username == "yashar"));
+            Assert.NotNull(lst.SingleOrDefault(x => x.Id == users.Last().Id && x.Username == "Update user"));
+        }
 
         private async Task<IEnumerable<User>> InsertTestUsersAsync()
         {
