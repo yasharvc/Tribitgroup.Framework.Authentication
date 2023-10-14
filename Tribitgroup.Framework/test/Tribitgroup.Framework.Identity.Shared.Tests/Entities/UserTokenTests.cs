@@ -1,11 +1,6 @@
 ﻿using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tribitgroup.Framework.Identity.Shared.DomainServices;
-using Tribitgroup.Framework.Identity.Shared.Entities;
+using Tribitgroup.Framework.Identity.Shared.Entities.User;
 using Tribitgroup.Framework.Shared.Extensions;
 
 namespace Tribitgroup.Framework.Identity.Shared.Tests.Entities
