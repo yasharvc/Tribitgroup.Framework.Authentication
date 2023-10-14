@@ -1,5 +1,6 @@
 ﻿using Tribitgroup.Framework.Identity.Shared.Entities;
 using Tribitgroup.Framework.Identity.Shared.Entities.User;
+using Tribitgroup.Framework.Identity.Shared.Enums;
 using Tribitgroup.Framework.Shared.Interfaces;
 
 namespace Tribitgroup.Framework.Identity.Shared.Repositories
@@ -7,7 +8,7 @@ namespace Tribitgroup.Framework.Identity.Shared.Repositories
     public interface IBaseUserRepository<TUser> : ICUDRepository<TUser, Guid>, IQueryRepository<TUser, Guid>
         where TUser : BaseUser, IAggregateRoot
     {
-        Task AddActivityLogAsync(TUser user, string description, string? metadata = null);
+        Task AddActivityLogAsync(TUser user, UserActivityEnum userActivity, string description, string? metadata = null);
         Task AddDeviceAsync(TUser user, UserDevice device);
         Task LockAsync(TUser user);
         Task UnlockAsync(TUser user);
