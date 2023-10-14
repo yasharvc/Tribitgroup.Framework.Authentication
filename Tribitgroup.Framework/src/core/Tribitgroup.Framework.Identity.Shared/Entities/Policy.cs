@@ -2,7 +2,7 @@
 
 namespace Tribitgroup.Framework.Identity.Shared.Entities
 {
-    public class Policy : Entity
+    public class Policy : AggregateRoot
     {
         public string Name { get; set; } = string.Empty;
         public virtual ICollection<Role> Roles { get; set; } = new HashSet<Role>();

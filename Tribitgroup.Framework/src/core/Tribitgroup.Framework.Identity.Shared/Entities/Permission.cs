@@ -2,7 +2,7 @@
 
 namespace Tribitgroup.Framework.Identity.Shared.Entities
 {
-    public class Permission : Entity
+    public class Permission : AggregateRoot
     {
         public string Name { get; set; } = string.Empty;
         private Permission() { }

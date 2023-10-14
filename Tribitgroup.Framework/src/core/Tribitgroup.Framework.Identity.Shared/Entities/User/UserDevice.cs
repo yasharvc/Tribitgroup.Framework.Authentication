@@ -1,7 +1,7 @@
 ﻿using Tribitgroup.Framework.Shared.Interfaces;
 using Tribitgroup.Framework.Shared.Types;
 
-namespace Tribitgroup.Framework.Identity.Shared.Entities
+namespace Tribitgroup.Framework.Identity.Shared.Entities.User
 {
     public class UserDevice : Entity, ILogicalDelete, IHasActiveStatus
     {

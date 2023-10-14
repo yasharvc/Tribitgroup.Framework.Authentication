@@ -2,7 +2,7 @@
 using Tribitgroup.Framework.Shared.Interfaces;
 using Tribitgroup.Framework.Shared.Types;
 
-namespace Tribitgroup.Framework.Identity.Shared.Entities
+namespace Tribitgroup.Framework.Identity.Shared.Entities.User
 {
     public class UserToken : Entity, IHasActiveStatus
     {
@@ -10,11 +10,11 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities
         public UserDevice Device { get; private set; } = new UserDevice();
         public string TokenHash { get; private set; } = string.Empty;
         public DateTime ValidUntil { get; private set; }
-        public bool IsActive {get; private set; }
+        public bool IsActive { get; private set; }
 
         private UserToken() { }
 
-        public UserToken(Guid deviceId, UserDevice device, string token, DateTime validUntil, bool isActive , Guid? id = null)
+        public UserToken(Guid deviceId, UserDevice device, string token, DateTime validUntil, bool isActive, Guid? id = null)
         {
             SetDeviceId(deviceId);
             SetDevice(device);
