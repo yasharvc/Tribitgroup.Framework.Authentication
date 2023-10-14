@@ -7,6 +7,7 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities
     {
         public UserActivityEnum Activity { get; set; }
         public string? Metadata { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public Guid UserId { get; set; }
     }
 }
