@@ -2,7 +2,7 @@
 
 namespace Tribitgroup.Framework.Identity.Shared.Entities
 {
-    public class Tenant : Entity
+    public class Tenant : AggregateRoot
     {
         public string PathToParent { get; set; } = string.Empty;
         public string ShortKey { get; set; } = string.Empty;
