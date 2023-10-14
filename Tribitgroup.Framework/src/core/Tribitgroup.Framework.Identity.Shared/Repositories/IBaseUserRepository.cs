@@ -15,5 +15,14 @@ namespace Tribitgroup.Framework.Identity.Shared.Repositories
         Task ActivateAsync(TUser user);
         Task DeactivateAsync(TUser user);
         Task AddPermissionAsync(TUser user, params Permission[] permissions);
+        Task RemovePermissionAsync(TUser user, params Permission[] permissions);
+        Task AddRoleAsync(TUser user, params Role[] roles);
+        Task RemoveRoleAsync(TUser user, params Role[] roles);
+        Task AddTenantAsync(TUser user, params Tenant[] tenants);
+        Task RemoveTenantAsync(TUser user, params Tenant[] tenants);
+        Task AddPolicyAsync(TUser user, params Policy[] policies);
+        Task AddTokenAsync(TUser user, Guid deviceId, string token, DateTime validUntil);
+        Task DeactivateTokenAsync(Guid tokenId);
+        Task UpdateLastLoginDateTimeAsynv(TUser user);
     }
 }
