@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\core\Tribitgroup.framework.Identity.Shared\Tribitgroup.Framework.Identity.Shared.csproj" />
+    <ProjectReference Include="..\..\src\core\Tribitgroup.Framework.Test.Helper\Tribitgroup.Framework.Test.Helper.csproj" />
   </ItemGroup>
 
 </Project>

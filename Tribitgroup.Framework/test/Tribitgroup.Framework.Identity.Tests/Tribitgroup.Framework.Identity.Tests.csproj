@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -26,7 +26,7 @@
     <ProjectReference Include="..\..\src\core\Tribitgroup.Framework.Dapper\Tribitgroup.Framework.Dapper.csproj" />
     <ProjectReference Include="..\..\src\core\Tribitgroup.Framework.DB.Relational.Helper\Tribitgroup.Framework.DB.Relational.Helper.csproj" />
     <ProjectReference Include="..\..\src\core\Tribitgroup.framework.Shared\Tribitgroup.Framework.Shared.csproj" />
-    <ProjectReference Include="..\..\Tribitgroup.Framework.Test.Helper\Tribitgroup.Framework.Test.Helper.csproj" />
+    <ProjectReference Include="..\..\src\core\Tribitgroup.Framework.Test.Helper\Tribitgroup.Framework.Test.Helper.csproj" />
   </ItemGroup>
 
 </Project>
