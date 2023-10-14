@@ -1,6 +1,6 @@
 ﻿using Tribitgroup.Framework.Identity.Shared.Entities.Interfaces;
 
-namespace Tribitgroup.Framework.Identity.Shared.Entities
+namespace Tribitgroup.Framework.Identity.Shared.Entities.User
 {
     public class UserWithUsernamePassword : BaseUser, IUsername, IPassword
     {

@@ -1,4 +1,4 @@
-﻿using Tribitgroup.Framework.Identity.Shared.Entities;
+﻿using Tribitgroup.Framework.Identity.Shared.Entities.User;
 
 namespace Tribitgroup.Framework.Identity.Shared.DomainServices
 {
