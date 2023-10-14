@@ -9,7 +9,10 @@ namespace Tribitgroup.Framework.Identity.Shared.Repositories
         where TUser : BaseUser, IAggregateRoot
     {
         Task AddActivityLogAsync(TUser user, UserActivityEnum userActivity, string description, string? metadata = null);
+
         Task AddDeviceAsync(TUser user, UserDevice device);
+        Task DeactivateDeviceAsync(TUser user, UserDevice device);
+
         Task LockAsync(TUser user);
         Task UnlockAsync(TUser user);
         Task DeleteAsync(TUser user);
