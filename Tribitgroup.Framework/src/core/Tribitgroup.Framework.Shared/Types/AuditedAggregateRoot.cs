@@ -2,12 +2,13 @@
 
 namespace Tribitgroup.Framework.Shared.Types
 {
-    public abstract class AuditedAggregateRoot<T> : Entity<T>, IAggregateRoot<T> where T : notnull
+    public abstract class AuditedAggregateRoot<T> : Entity<T>, IHasCreatedAt, IHasCreatedBy, IAggregateRoot<T> where T : notnull
     {
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
         public Guid CreatedBy { get; set; }
+        public DateTime CreatedOn {get; set; }
         public Guid? UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public AuditedAggregateRoot()
         {
