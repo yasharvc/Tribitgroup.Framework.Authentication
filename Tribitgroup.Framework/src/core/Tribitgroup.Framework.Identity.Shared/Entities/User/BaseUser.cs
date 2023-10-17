@@ -18,5 +18,28 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities.User
         public virtual ICollection<UserDevice> Devices { get; set; } = new List<UserDevice>();
         public virtual ICollection<UserActivityLog> ActivityLogs { get; set; } = new List<UserActivityLog>();
 
+        public Task Activate()
+        {
+            IsActive = true;
+            return Task.CompletedTask;
+        }
+
+        public Task Deactivate()
+        {
+            IsActive = false;
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteAsync()
+        {
+            Deleted = true;
+            return Task.CompletedTask;
+        }
+
+        public Task Undelete()
+        {
+            Deleted = false;
+            return Task.CompletedTask;
+        }
     }
 }

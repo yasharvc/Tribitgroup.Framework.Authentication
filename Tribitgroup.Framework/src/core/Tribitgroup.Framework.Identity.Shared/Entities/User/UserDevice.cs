@@ -10,5 +10,27 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities.User
         public string IP { get; set; } = string.Empty;
         public DateTime? ValidUntil { get; set; }
         public string Name { get; set; } = string.Empty;
+        public Task Activate()
+        {
+            IsActive = true;
+            return Task.CompletedTask;
+        }
+
+        public Task Deactivate()
+        {
+            IsActive = false;
+            return Task.CompletedTask;
+        }
+        public Task DeleteAsync()
+        {
+            Deleted = true;
+            return Task.CompletedTask;
+        }
+
+        public Task Undelete()
+        {
+            Deleted = false;
+            return Task.CompletedTask;
+        }
     }
 }

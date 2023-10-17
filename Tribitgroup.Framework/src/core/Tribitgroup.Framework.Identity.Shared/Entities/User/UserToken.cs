@@ -57,5 +57,17 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities.User
         {
             DeviceId = deviceId;
         }
+
+        public Task Activate()
+        {
+            SetIsActive(true);
+            return Task.CompletedTask;
+        }
+
+        public Task Deactivate()
+        {
+            SetIsActive(false);
+            return Task.CompletedTask;
+        }
     }
 }
