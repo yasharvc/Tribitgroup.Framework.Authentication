@@ -2,6 +2,7 @@
 {
     public interface IHasCreatedBy
     {
-        Guid CreatedBy { get; set; }
+        Guid CreatedBy { get; }
+        Task SetCreatedByAsync(Guid userId);
     }
 }
