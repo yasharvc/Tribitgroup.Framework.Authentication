@@ -8,6 +8,8 @@
         Task RemoveAsync(TKey key);
         Task<bool> ContainsKeyAsync(TKey key);
         Task ClearAsync();
+        TimeSpan? AutoClearTime { get; }
+        uint MaxSizeInBytes { get; }
     }
 
     public interface IEntityCache : ICache<Guid, IEntity<Guid>> { }
