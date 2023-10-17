@@ -20,7 +20,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
         private const string IsNotLogicalDeletedWhereClause = $"{nameof(ILogicalDelete.Deleted)} = false";
         private const string IsActiveWhereClause = $"{nameof(IHasActiveStatus.IsActive)} = true";
         protected DbContextOptions<TDbContext> DbOptions { get; }
-        protected int DefaultMaxCountForSelect { get; set; } = 200;
+        protected uint DefaultMaxCountForSelect { get; set; } = 200;
         protected bool IsLogicalDelete { get; }
         protected bool IsMultiTenant { get; }
         protected bool HasActiveFlag { get; }
@@ -62,15 +62,15 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             if (!IsCachable)
             {
                 using var ctx = GetContext();
-                return await GetWithIncludeFlag(includeChilds: includeChilds, ctx, includeInActives, includeLogicalDeleted)
+                return await GetWithIncludeFlagAsync(includeChilds: includeChilds, ctx, includeInActives, includeLogicalDeleted)
                     .Sort(sorts)
-                    .PaginateAsync(pagination, DefaultMaxCountForSelect);
+                    .PaginateAsync(pagination, (int)DefaultMaxCountForSelect);
             }
 
             var query = await GetCacheableQueryAsync(includeInActives, includeLogicalDeleted, cancellationToken);
             return await query
                 .SortBy(sorts)
-                .PaginateAsync(pagination, DefaultMaxCountForSelect);
+                .PaginateAsync(pagination, (int)DefaultMaxCountForSelect);
         }
 
         public virtual async Task<System.Linq.Dynamic.Core.PagedResult<T>> WhereAsync(
@@ -85,16 +85,16 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             if (!IsCachable)
             {
                 using var ctx = GetContext();
-                return await GetWithIncludeFlag(includeChilds, ctx, includeInActives, includeLogicalDeleted)
+                return await GetWithIncludeFlagAsync(includeChilds, ctx, includeInActives, includeLogicalDeleted)
                     .Where(selector)
                     .SortBy(sorts)
-                    .PaginateAsync(pagination, DefaultMaxCountForSelect);
+                    .PaginateAsync(pagination, (int)DefaultMaxCountForSelect);
             }
 
             var query = await GetCacheableQueryAsync(includeInActives, includeLogicalDeleted, cancellationToken);
             return await query
                 .SortBy(sorts)
-                .PaginateAsync(pagination, DefaultMaxCountForSelect);
+                .PaginateAsync(pagination, (int)DefaultMaxCountForSelect);
         }
 
         public virtual async Task<System.Linq.Dynamic.Core.PagedResult<T>> WhereAsync(
@@ -109,17 +109,17 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             if (!IsCachable)
             {
                 using var ctx = GetContext();
-                return await GetWithIncludeFlag(includeChilds, ctx, includeInActives, includeLogicalDeleted)
+                return await GetWithIncludeFlagAsync(includeChilds, ctx, includeInActives, includeLogicalDeleted)
                     .Where(conditions)
                     .SortBy(sorts)
-                    .PaginateAsync(pagination, DefaultMaxCountForSelect);
+                    .PaginateAsync(pagination, (int)DefaultMaxCountForSelect);
             }
 
             var query = await GetCacheableQueryAsync(includeInActives, includeLogicalDeleted, cancellationToken);
             return await query
                 .Where(conditions)
                 .SortBy(sorts)
-                .PaginateAsync(pagination, DefaultMaxCountForSelect);
+                .PaginateAsync(pagination, (int)DefaultMaxCountForSelect);
         }
 
         public virtual async Task<T?> GetByIdAsync(
@@ -139,7 +139,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             if (!IsCachable)
             {
                 using var ctx = GetContext();
-                var query = GetWithIncludeFlag(includeChilds, ctx, includeInActives, includeLogicalDeleted);
+                var query = GetWithIncludeFlagAsync(includeChilds, ctx, includeInActives, includeLogicalDeleted);
                 return selector == null
                     ? await query.FirstOrDefaultAsync(cancellationToken)
                     : await query.FirstOrDefaultAsync(selector, cancellationToken);
@@ -163,7 +163,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             if (!IsCachable)
             {
                 using var ctx = GetContext();
-                var query = GetWithIncludeFlag(includeChilds, ctx, includeInActives, includeLogicalDeleted)
+                var query = GetWithIncludeFlagAsync(includeChilds, ctx, includeInActives, includeLogicalDeleted)
                     .OrderBy(x => x.Id);
                 return selector == null
                     ? await query.LastOrDefaultAsync(cancellationToken)
@@ -188,7 +188,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             if (!IsCachable)
             {
                 using var ctx = GetContext();
-                var query = GetWithIncludeFlag(includeChilds, ctx, includeInActives, includeLogicalDeleted);
+                var query = GetWithIncludeFlagAsync(includeChilds, ctx, includeInActives, includeLogicalDeleted);
                 return selector == null
                     ? await query.SingleOrDefaultAsync(cancellationToken)
                     : await query.SingleOrDefaultAsync(selector, cancellationToken);
@@ -212,7 +212,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             if (!IsCachable)
             {
                 using var ctx = GetContext();
-                var query = GetWithIncludeFlag(includeChilds, ctx, includeInActives, includeLogicalDeleted);
+                var query = GetWithIncludeFlagAsync(includeChilds, ctx, includeInActives, includeLogicalDeleted);
                 return selector == null
                     ? await query.SingleAsync(cancellationToken)
                     : await query.SingleAsync(selector, cancellationToken);
@@ -236,9 +236,9 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             {
                 using var ctx = GetContext();
                 return selector == null
-                    ? await GetWithIncludeFlag(includeChilds: false, ctx, includeInActives, includeLogicalDeleted)
+                    ? await GetWithIncludeFlagAsync(includeChilds: false, ctx, includeInActives, includeLogicalDeleted)
                         .CountAsync(cancellationToken)
-                    : await GetWithIncludeFlag(includeChilds: false, ctx, includeInActives, includeLogicalDeleted)
+                    : await GetWithIncludeFlagAsync(includeChilds: false, ctx, includeInActives, includeLogicalDeleted)
                         .CountAsync(selector, cancellationToken);
             }
 
@@ -259,9 +259,9 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
                 using var ctx = GetContext();
 
                 return selector == null
-                    ? await GetWithIncludeFlag(includeChilds: false, ctx, includeInActives, includeLogicalDeleted)
+                    ? await GetWithIncludeFlagAsync(includeChilds: false, ctx, includeInActives, includeLogicalDeleted)
                         .AnyAsync(cancellationToken)
-                    : await GetWithIncludeFlag(includeChilds: false, ctx, includeInActives, includeLogicalDeleted)
+                    : await GetWithIncludeFlagAsync(includeChilds: false, ctx, includeInActives, includeLogicalDeleted)
                         .AnyAsync(selector, cancellationToken);
             }
 
@@ -278,8 +278,8 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
         {
             var ctx = GetContextWithUOW(unitOfWorkHost);
 
-            entity.Id = GeneralTypeExtensions.NewId(entity.Id);
-            SetUpdatedAndCreated(entity);
+            entity.Id = BasicTypesExtensions.NewId(entity.Id);
+            SetUpdatedAndCreatedAsync(entity);
             await SetIsActiveFlagAsync(entity);
 
             await ctx.Set<T>().AddAsync(entity, cancellationToken);
@@ -310,9 +310,9 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             var createDate = DateTime.UtcNow;
             foreach (var entity in entities)
             {
-                entity.Id = GeneralTypeExtensions.NewId(entity.Id);
-                SetUpdatedAndCreated(entity);
-                SetIsActiveFlagAsync(entity);
+                entity.Id = BasicTypesExtensions.NewId(entity.Id);
+                SetUpdatedAndCreatedAsync(entity);
+                await SetIsActiveFlagAsync(entity);
             }
 
             await ctx.Set<T>().AddRangeAsync(entities, cancellationToken);
@@ -333,7 +333,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             return entities;
         }
 
-        public virtual async Task UpdateOneAsync(
+        public virtual async Task<T> UpdateOneAsync(
             T entity,
             IUnitOfWorkHostInterface? unitOfWorkHost = null,
             CancellationToken cancellationToken = default,
@@ -354,7 +354,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
                 property.SetValue(existingEntity, entity.GetType().GetProperty(property.Name).GetValue(entity));
             }
 
-            SetUpdated(existingEntity);
+            SetUpdatedAsync(existingEntity);
 
             ctx.Set<T>().Attach(existingEntity);
             ctx.Set<T>().Update(existingEntity);
@@ -377,7 +377,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             return entity;
         }
 
-        public virtual async Task<T> UpdateManyAsync(
+        public virtual async Task<IEnumerable<T>> UpdateManyAsync(
             IEnumerable<T> entities,
             IUnitOfWorkHostInterface? unitOfWorkHost = null,
             Expression<Func<T, object>>? includes = null,
@@ -399,7 +399,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
                     property.SetValue(existingEntity, entity.GetType().GetProperty(property.Name).GetValue(entity));
                 }
 
-                SetUpdated(entity);
+                SetUpdatedAsync(entity);
 
                 ctx.Set<T>().AttachRange(existingEntity);
                 ctx.Set<T>().UpdateRange(existingEntity);
@@ -418,40 +418,14 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
                 await UpdateCache(ctx, cancellationToken);
                 await DisposeLocalContextAsync(ctx);
             }
+            return entities;
         }
 
         public virtual async Task DeleteOneAsync(
             T item,
             IUnitOfWorkHostInterface? unitOfWorkHost = null,
-            CancellationToken cancellationToken = default)
-        {
-            var ctx = GetContextWithUOW(unitOfWorkHost);
-
-            if (IsLogicalDelete)
-            {
-                (item as ILogicalDelete).IsDeleted = true;
-                ctx.Set<T>().Attach(item);
-                ctx.Set<T>().Update(item);
-            }
-            else
-            {
-                ctx.Set<T>().Remove(item);
-            }
-            await ctx.SaveChangesAsync(cancellationToken);
-
-            if (unitOfWorkHost != null)
-            {
-                unitOfWorkHost.Committed += async (s, e) =>
-                {
-                    await UpdateCache();
-                };
-            }
-            else
-            {
-                await UpdateCache(ctx, cancellationToken);
-                await DisposeLocalContextAsync(ctx);
-            }
-        }
+            CancellationToken cancellationToken = default) 
+            => await DeleteManyAsync(new List<T> { item }, unitOfWorkHost, cancellationToken);
 
         public virtual async Task DeleteManyAsync(
             IEnumerable<T> entities,
@@ -464,7 +438,8 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             {
                 foreach (var item in entities)
                 {
-                    (item as ILogicalDelete).IsDeleted = true;
+                    var temp = (item as ILogicalDelete) ?? throw new InvalidCastException();
+                    await temp.DeleteAsync();
                     ctx.Set<T>().Attach(item);
                     ctx.Set<T>().Update(item);
                 }
@@ -490,40 +465,32 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             }
         }
 
-        public void SetMaxSelectCount(int count)
+        public void SetMaxSelectCount(uint count) => DefaultMaxCountForSelect = count;
+
+        private async Task<Guid> GetUserId()
         {
-            if (count <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Must be bigger than zero");
-            }
-            DefaultMaxCountForSelect = count;
+            var temp = await UserInfoProvider?.GetCurrentUserAsync() ?? null;
+            return temp?.UserId ?? Guid.Empty;
         }
 
-        private Guid? GetUserId()
-        {
-            if (ClientInformationService is not null && ClientInformationService?.UserId is not null)
-                return ClientInformationService.UserId.ToGuid();
-            return null;
-        }
-
-        private void SetUpdatedAndCreated(T entity)
+        private async Task SetUpdatedAndCreatedAsync(T entity)
         {
             var utcNow = DateTime.UtcNow;
-            if (entity is IHasCreated hasCreated)
+            if (entity is IHasCreatedAt hasCreated)
             {
                 hasCreated.CreatedAt = utcNow;
             }
-            if (entity is IHasUpdated hasUpdated)
+            if (entity is IHasUpdatedAt hasUpdated)
             {
                 hasUpdated.UpdatedAt = utcNow;
             }
             if (entity is IHasCreatedBy hasCreatedBy)
             {
-                hasCreatedBy.CreatedById = GetUserId();
+                hasCreatedBy.CreatedBy = await GetUserId();
             }
             if (entity is IHasUpdatedBy hasUpdatedBy)
             {
-                hasUpdatedBy.UpdatedById = GetUserId();
+                hasUpdatedBy.UpdatedBy = await GetUserId();
             }
         }
 
@@ -535,16 +502,16 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             }
         }
 
-        private void SetUpdated(T entity)
+        private async Task SetUpdatedAsync(T entity)
         {
             var utcNow = DateTime.UtcNow;
-            if (entity is IHasUpdated hasUpdated)
+            if (entity is IHasUpdatedAt hasUpdated)
             {
                 hasUpdated.UpdatedAt = utcNow;
             }
             if (entity is IHasUpdatedBy hasUpdatedBy)
             {
-                hasUpdatedBy.UpdatedById = GetUserId();
+                hasUpdatedBy.UpdatedBy = await GetUserId();
             }
         }
 
@@ -555,22 +522,23 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
 
         private async Task<string> GetCachedData(CancellationToken cancellationToken)
         {
-            var json = await CacheDb.StringGetAsync(CacheKey);
-            if (string.IsNullOrEmpty(json))
-            {
-                await FillCache(cancellationToken: cancellationToken);
-                json = await CacheDb.StringGetAsync(CacheKey);
-            }
+            //var json = await CacheDb.StringGetAsync(CacheKey);
+            //if (string.IsNullOrEmpty(json))
+            //{
+            //    await FillCache(cancellationToken: cancellationToken);
+            //    json = await CacheDb.StringGetAsync(CacheKey);
+            //}
 
-            return json.ToString();
+            //return json.ToString();
+            return "";
         }
 
         private async Task FillCache(TDbContext? dbContext = null, CancellationToken cancellationToken = default)
         {
-            if (!IsCachable) return;
-            var ctx = dbContext ?? GetContext();
-            var serializedData = JsonSerializer.Serialize(await ctx.Set<T>().ToListAsync(cancellationToken));
-            await CacheDb.StringSetAsync(CacheKey, serializedData, CacheTimeout);
+            //if (!IsCachable) return;
+            //var ctx = dbContext ?? GetContext();
+            //var serializedData = JsonSerializer.Serialize(await ctx.Set<T>().ToListAsync(cancellationToken));
+            //await CacheDb.StringSetAsync(CacheKey, serializedData, CacheTimeout);
         }
 
         public async Task ResetCacheAsync()
@@ -593,44 +561,46 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
         private TDbContext GetContextWithUOW(IUnitOfWorkHostInterface? uow)
             => uow == null || uow.DbContext == null ? GetContext() : uow.DbContext as TDbContext;
 
-        private IQueryable<T> ApplyTenantFilter(IQueryable<T> query)
+        private async Task<IQueryable<T>> ApplyTenantFilterAsync(IQueryable<T> query)
         {
-            if (!IsMultiTenant)
-                return query;
-            if (TenantService is null)
-                return query;
-            if (TenantService.IgnoreTenancy)
-                return query;
-            var condition = new Condition
-            {
-                PropertyName = nameof(IMultiTenant.TenantId),
-                Operator = Shared.Enums.ConditionOperatorEnum.Equal,
-                Values = new List<string> { TenantService.Tenant.ToString() }
-            };
-            return query.Where(condition);
+            //if (!IsMultiTenant)
+            //    return query;
+            //if (await UserInfoProvider.GetCurrentTenant() is null)
+            //    return query;
+            //if (TenantService.IgnoreTenancy)
+            //    return query;
+            //var condition = new Condition
+            //{
+            //    PropertyName = nameof(IMultiTenant.TenantId),
+            //    Operator = Shared.Enums.ConditionOperatorEnum.Equal,
+            //    Values = new List<string> { TenantService.Tenant.ToString() }
+            //};
+            //return query.Where(condition);
+            return query;
         }
 
-        private IQueryable<T> GetWithIncludeFlag(bool includeChilds, TDbContext ctx, bool includeInActives, bool includeLogicalDeleted)
+        private async Task<IQueryable<T>> GetWithIncludeFlagAsync(bool includeChilds, TDbContext ctx, bool includeInActives, bool includeLogicalDeleted)
         {
             var query = includeChilds ? GetDbSetWithIncludes(ctx) : ctx.Set<T>();
 
             query = query
                 .WhereIf(HasActiveFlag && !includeInActives, IsActiveWhereClause)
                 .WhereIf(IsLogicalDelete && !includeLogicalDeleted, IsNotLogicalDeletedWhereClause);
-            query = ApplyTenantFilter(query);
+            query = await ApplyTenantFilterAsync(query);
             return query;
         }
 
-        private async Task<IQueryable<T>> GetCacheableQueryAsync(bool includeInActives, bool includeLogicalDeleted, CancellationToken cancellationToken = default)
+        private Task<IQueryable<T>> GetCacheableQueryAsync(bool includeInActives, bool includeLogicalDeleted, CancellationToken cancellationToken = default)
         {
-            var cachedData = await GetCachedData(cancellationToken);
-            var lst = JsonSerializer.Deserialize<IEnumerable<T>>(cachedData.ToString());
+            //var cachedData = await GetCachedData(cancellationToken);
+            //var lst = JsonSerializer.Deserialize<IEnumerable<T>>(cachedData.ToString());
 
-            var query = lst.AsQueryable()
-                .WhereIf(HasActiveFlag && !includeInActives, IsActiveWhereClause)
-                .WhereIf(IsLogicalDelete && !includeLogicalDeleted, IsNotLogicalDeletedWhereClause);
-            query = ApplyTenantFilter(query);
-            return query;
+            //var query = lst.AsQueryable()
+            //    .WhereIf(HasActiveFlag && !includeInActives, IsActiveWhereClause)
+            //    .WhereIf(IsLogicalDelete && !includeLogicalDeleted, IsNotLogicalDeletedWhereClause);
+            //query = ApplyTenantFilter(query);
+            //return query;
+            throw new NotImplementedException();
         }
 
     }
