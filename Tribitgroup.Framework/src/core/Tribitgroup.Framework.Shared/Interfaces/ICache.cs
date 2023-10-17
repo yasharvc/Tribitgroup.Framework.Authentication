@@ -12,5 +12,7 @@
         ulong MaxSizeInBytes { get; }
     }
 
-    public interface IEntityCache : ICache<Guid, IEntity<Guid>> { }
+    public interface IEntityCache<T> : ICache<Guid, T>
+        where T : class, IEntity<Guid>
+    { }
 }
