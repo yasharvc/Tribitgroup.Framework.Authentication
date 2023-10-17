@@ -128,5 +128,16 @@ namespace Tribitgroup.Framework.Shared.Extensions
         }
 
         public static Guid ToGuid(this DateTime date) => date.Ticks.ToGuid();
+
+        public static T? NewId<T>(T id)
+        {
+            if (typeof(T) != typeof(Guid) && id != null)
+                return id;
+            if (typeof(T) == typeof(Guid) && id?.ToString() != Guid.Empty.ToString())
+                return id;
+            if (typeof(T) == typeof(Guid))
+                return (T)Convert.ChangeType(GetSequentialGuid(), typeof(T));
+            return default;
+        }
     }
 }
