@@ -2,10 +2,13 @@
 {
     public interface ICache<TKey, TValue>
     {
-        TValue Get(TKey key);
-        Task AddOrUpdate(TKey key, TValue value, TimeSpan? expiration = null);
-        Task Remove(TKey key);
-        Task<bool> ContainsKey(TKey key);
-        Task Clear();
+        Task<TValue> GetAsync(TKey key);
+        Task<IEnumerable<TValue>> GetAllAsync();
+        Task AddOrUpdateAsync(TKey key, TValue value, TimeSpan? expiration = null);
+        Task RemoveAsync(TKey key);
+        Task<bool> ContainsKeyAsync(TKey key);
+        Task ClearAsync();
     }
+
+    public interface IEntityCache : ICache<Guid, IEntity<Guid>> { }
 }
