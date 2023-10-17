@@ -3,5 +3,7 @@
     public interface ILogicalDelete
     {
         bool Deleted { get; }
+        Task DeleteAsync();
+        Task Undelete();
     }
 }

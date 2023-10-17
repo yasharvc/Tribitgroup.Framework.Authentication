@@ -2,6 +2,6 @@
 {
     public interface IHasCreatedBy
     {
-        Guid CreatedBy { get; }
+        Guid CreatedBy { get; set; }
     }
 }
