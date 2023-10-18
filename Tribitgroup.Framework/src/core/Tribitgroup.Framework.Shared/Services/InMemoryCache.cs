@@ -6,20 +6,19 @@ namespace Tribitgroup.Framework.Shared.Services
     public class InMemoryCache<TKey, TValue> : ICache<TKey, TValue> where TKey : notnull
     {
         public TimeSpan? AutoClearTime { get; private set; } = TimeSpan.Zero;
-        public ulong MaxSizeInBytes { get; private set; } = 1024 * 2;
+        public ulong MaxSizeInBytes { get; private set; } = 1024;
         protected MemoryCache Cache { get; private set; }
 
-        public InMemoryCache(ulong maxSizeInBytes, TimeSpan? autoClearTime = null)
+        public InMemoryCache(long maxSizeInBytes, TimeSpan? autoClearTime = null)
         {
-            if(autoClearTime.HasValue &&  autoClearTime.Value < TimeSpan.Zero)
+            if (autoClearTime.HasValue && autoClearTime.Value < TimeSpan.Zero)
                 throw new InvalidDataException(nameof(autoClearTime));
 
             AutoClearTime = autoClearTime ?? TimeSpan.Zero;
-            MaxSizeInBytes = maxSizeInBytes;
+            MaxSizeInBytes = (ulong)maxSizeInBytes;
             Cache = new MemoryCache(new MemoryCacheOptions
             {
-                SizeLimit = (long)MaxSizeInBytes,
-                
+                SizeLimit = MaxSizeInBytes < 1024 ? 1024 : (long)MaxSizeInBytes,
             });
         }
 
@@ -45,24 +44,14 @@ namespace Tribitgroup.Framework.Shared.Services
 
         public Task AddOrUpdateAsync(TKey key, TValue value, TimeSpan? expiration = null)
         {
+            var cacheEntryOptions = new MemoryCacheEntryOptions();
+            
             if (expiration.HasValue)
-            {
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTimeOffset.Now.Add(expiration.Value)
-                };
-                Cache.Set(key, value, cacheEntryOptions);
-            }
-            else if (AutoClearTime.HasValue)
-            {
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTimeOffset.Now.Add(AutoClearTime.Value)
-                };
-                Cache.Set(key, value, cacheEntryOptions);
-            }
-            else
-                Cache.Set(key, value);
+                cacheEntryOptions.SetAbsoluteExpiration(expiration.Value);
+            else if (AutoClearTime.HasValue && AutoClearTime.Value.TotalMilliseconds > 0)
+                cacheEntryOptions.SetAbsoluteExpiration(AutoClearTime.Value);
+
+            Cache.Set(key, value, cacheEntryOptions.SetSize(1));
             return Task.CompletedTask;
         }
 
