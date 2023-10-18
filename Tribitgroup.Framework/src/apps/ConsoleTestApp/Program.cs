@@ -1,14 +1,42 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Numpy;
 using Python.Included;
 using Python.Runtime;
+using Tribitgroup.Framework.Shared.Services;
+using Tribitgroup.Framework.Shared.Types;
 
 namespace ConsoleTestApp
 {
     internal class Program
     {
+        class TestEntity : Entity
+        {
+            public string FullName { get; set; } = string.Empty;
+        }
         static async Task Main(string[] args)
+        {
+            var cache = new InMemoryEntityCache<TestEntity>(1024);
+
+            var test1 = new TestEntity { FullName = "a" };
+            var test2 = new TestEntity { FullName = "b" };
+
+            await cache.AddOrUpdateAsync(test1, test2);
+
+            test1.FullName = "Yashar";
+
+            await cache.AddOrUpdateAsync(test1, TimeSpan.FromSeconds(3));
+            var x = await cache.GetAsync(test1.Id);
+            await Console.Out.WriteLineAsync(x.FullName);
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            x = await cache.GetAsync(test1.Id);
+            await Console.Out.WriteLineAsync(x?.FullName ?? "NULL");
+        }
+
+        private async static Task Method1()
         {
             await Installer.SetupPython();
             await Installer.TryInstallPip();
@@ -16,12 +44,6 @@ namespace ConsoleTestApp
             PythonEngine.Initialize();
             dynamic spacy = Py.Import("spacy");
             Console.WriteLine("Spacy version: " + spacy.__version__);
-
-            Method1();
-        }
-
-        private static void Method1()
-        {
             var a = np.arange(1000);
             var b = np.arange(1000);
 

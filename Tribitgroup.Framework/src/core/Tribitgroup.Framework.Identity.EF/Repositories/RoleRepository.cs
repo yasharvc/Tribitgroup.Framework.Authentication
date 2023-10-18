@@ -9,7 +9,7 @@ using Tribitgroup.Framework.Shared.Interfaces;
 
 namespace Tribitgroup.Framework.Identity.EF.Repositories
 {
-    public sealed class RoleRepository: IRoleRepository , ICUDRepository<Role, Guid>, IQueryRepository<Role, Guid>
-    {
-    }
+    //public sealed class RoleRepository: IRoleRepository , ICUDRepository<Role, Guid>, IQueryRepository<Role, Guid>
+    //{
+    //}
 }
