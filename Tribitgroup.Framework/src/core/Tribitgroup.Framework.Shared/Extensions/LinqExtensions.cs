@@ -247,7 +247,7 @@ namespace Tribitgroup.Framework.Shared.Extensions
                 return query.Where($"{condition.PropertyName} != @0", condition.Values.First());
             }
             return query;
-            static IQueryable<T> ApplyInClause<T>(IQueryable<T> query, Condition condition)
+            static IQueryable<T> ApplyInClause(IQueryable<T> query, Condition condition)
             {
                 var propType = typeof(T).GetProperty(condition.PropertyName)?.PropertyType;
                 if (propType is null)

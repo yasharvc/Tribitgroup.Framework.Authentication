@@ -10,13 +10,19 @@ using Tribitgroup.Framework.Shared.Types;
 
 namespace ConsoleTestApp
 {
-    internal class Program
-    {
-        class TestEntity : Entity
+    public class TestEntity : Entity
         {
             public string FullName { get; set; } = string.Empty;
         }
+    internal class Program
+    {
+        
         static async Task Main(string[] args)
+        {
+            var res = CSharpCodeRunner.RunLibraryCodeFromFile(await File.ReadAllTextAsync("D:/1.cs"),"LibClass", "LibMethod");
+        }
+
+        private static async Task InMemoryCacheTestAsync()
         {
             var cache = new InMemoryEntityCache<TestEntity>(1024);
 
