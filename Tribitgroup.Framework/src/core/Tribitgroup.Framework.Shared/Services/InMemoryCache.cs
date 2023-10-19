@@ -7,7 +7,7 @@ namespace Tribitgroup.Framework.Shared.Services
     {
         public TimeSpan? AutoClearTime { get; private set; } = TimeSpan.Zero;
         public ulong MaxSizeInBytes { get; private set; } = 1024;
-        protected MemoryCache Cache { get; private set; }
+        static protected IDictionary<Type, MemoryCache> Cache { get; private set; } = new Dictionary<Type, MemoryCache>();
 
         public InMemoryCache(long maxSizeInBytes, TimeSpan? autoClearTime = null)
         {
@@ -16,13 +16,13 @@ namespace Tribitgroup.Framework.Shared.Services
 
             AutoClearTime = autoClearTime ?? TimeSpan.Zero;
             MaxSizeInBytes = (ulong)maxSizeInBytes;
-            Cache = new MemoryCache(new MemoryCacheOptions
+            Cache[typeof(TValue)] = Cache.ContainsKey(typeof(TValue)) ? Cache[typeof(TValue)] : new MemoryCache(new MemoryCacheOptions
             {
                 SizeLimit = MaxSizeInBytes < 1024 ? 1024 : (long)MaxSizeInBytes,
             });
         }
 
-        public Task<TValue?> GetAsync(TKey key) => Task.FromResult((TValue?)Cache.Get(key));
+        public Task<TValue?> GetAsync(TKey key) => Task.FromResult((TValue?)Cache[typeof(TValue)].Get(key));
 
         public Task<IEnumerable<TValue>> GetAllAsync()
         {
@@ -51,17 +51,17 @@ namespace Tribitgroup.Framework.Shared.Services
             else if (AutoClearTime.HasValue && AutoClearTime.Value.TotalMilliseconds > 0)
                 cacheEntryOptions.SetAbsoluteExpiration(AutoClearTime.Value);
 
-            Cache.Set(key, value, cacheEntryOptions.SetSize(1));
+            Cache[typeof(TValue)].Set(key, value, cacheEntryOptions.SetSize(1));
             return Task.CompletedTask;
         }
 
         public Task RemoveAsync(TKey key)
         {
-            Cache.Remove(key);
+            Cache[typeof(TValue)].Remove(key);
             return Task.CompletedTask;
         }
 
-        public Task<bool> ContainsKeyAsync(TKey key) => Task.FromResult(Cache.Get(key) != null);
+        public Task<bool> ContainsKeyAsync(TKey key) => Task.FromResult(Cache[typeof(TValue)].Get(key) != null);
 
         public Task ClearAsync()
         {

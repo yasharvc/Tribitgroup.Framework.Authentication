@@ -19,7 +19,14 @@ namespace ConsoleTestApp
         
         static async Task Main(string[] args)
         {
-            var res = CSharpCodeRunner.RunLibraryCodeFromFile(await File.ReadAllTextAsync("D:/1.cs"),"LibClass", "LibMethod");
+            await InMemoryCacheTestAsync();
+        }
+
+        private static async Task RunCSharpAtRunTimeAsync()
+        {
+            var res = CSharpCodeRunner.RunLibraryCodeFromFile(await File.ReadAllTextAsync("D:/1.cs"), "LibClass", "LibMethod");
+            if (res != null && res.GetType() == typeof(string))
+                await Console.Out.WriteLineAsync(res as string);
         }
 
         private static async Task InMemoryCacheTestAsync()
@@ -39,6 +46,11 @@ namespace ConsoleTestApp
             await Task.Delay(TimeSpan.FromSeconds(5));
 
             x = await cache.GetAsync(test1.Id);
+            await Console.Out.WriteLineAsync(x?.FullName ?? "NULL");
+
+            cache = new InMemoryEntityCache<TestEntity>(1024);
+            x = await cache.GetAsync(test2.Id);
+
             await Console.Out.WriteLineAsync(x?.FullName ?? "NULL");
         }
 
