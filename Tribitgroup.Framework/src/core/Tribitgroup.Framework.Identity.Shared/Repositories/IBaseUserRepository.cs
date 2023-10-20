@@ -2,6 +2,7 @@
 using Tribitgroup.Framework.Identity.Shared.Entities.User;
 using Tribitgroup.Framework.Identity.Shared.Enums;
 using Tribitgroup.Framework.Shared.Interfaces;
+using Tribitgroup.Framework.Shared.Interfaces.Entity;
 
 namespace Tribitgroup.Framework.Identity.Shared.Repositories
 {

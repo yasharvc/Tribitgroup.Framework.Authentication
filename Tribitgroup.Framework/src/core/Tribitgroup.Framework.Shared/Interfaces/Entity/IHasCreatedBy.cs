@@ -1,4 +1,4 @@
-﻿namespace Tribitgroup.Framework.Shared.Interfaces
+﻿namespace Tribitgroup.Framework.Shared.Interfaces.Entity
 {
     public interface IHasCreatedBy
     {

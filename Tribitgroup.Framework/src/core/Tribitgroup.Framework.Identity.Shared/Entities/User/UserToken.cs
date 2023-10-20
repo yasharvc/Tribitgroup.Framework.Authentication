@@ -1,5 +1,5 @@
 ﻿using Tribitgroup.Framework.Shared.Extensions;
-using Tribitgroup.Framework.Shared.Interfaces;
+using Tribitgroup.Framework.Shared.Interfaces.Entity;
 using Tribitgroup.Framework.Shared.Types;
 
 namespace Tribitgroup.Framework.Identity.Shared.Entities.User
@@ -58,13 +58,13 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities.User
             DeviceId = deviceId;
         }
 
-        public Task Activate()
+        public Task ActivateAsync()
         {
             SetIsActive(true);
             return Task.CompletedTask;
         }
 
-        public Task Deactivate()
+        public Task DeactivateAsync()
         {
             SetIsActive(false);
             return Task.CompletedTask;

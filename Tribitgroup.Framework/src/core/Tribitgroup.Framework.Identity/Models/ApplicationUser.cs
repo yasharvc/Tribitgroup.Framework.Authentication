@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using Tribitgroup.Framework.Shared.Extensions;
-using Tribitgroup.Framework.Shared.Interfaces;
+using Tribitgroup.Framework.Shared.Interfaces.Entity;
 
 namespace Tribitgroup.Framework.Identity.Models
 {

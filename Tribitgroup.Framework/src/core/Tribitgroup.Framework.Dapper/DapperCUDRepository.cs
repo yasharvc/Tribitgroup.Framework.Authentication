@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 using System.Linq.Expressions;
 using Tribitgroup.Framework.Shared.Interfaces;
+using Tribitgroup.Framework.Shared.Interfaces.Entity;
 
 namespace Tribitgroup.Framework.Dapper
 {

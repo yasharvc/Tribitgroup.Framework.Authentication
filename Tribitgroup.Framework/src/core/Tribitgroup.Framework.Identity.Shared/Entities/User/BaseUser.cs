@@ -1,4 +1,4 @@
-﻿using Tribitgroup.Framework.Shared.Interfaces;
+﻿using Tribitgroup.Framework.Shared.Interfaces.Entity;
 using Tribitgroup.Framework.Shared.Types;
 
 namespace Tribitgroup.Framework.Identity.Shared.Entities.User
@@ -18,13 +18,13 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities.User
         public virtual ICollection<UserDevice> Devices { get; set; } = new List<UserDevice>();
         public virtual ICollection<UserActivityLog> ActivityLogs { get; set; } = new List<UserActivityLog>();
 
-        public Task Activate()
+        public Task ActivateAsync()
         {
             IsActive = true;
             return Task.CompletedTask;
         }
 
-        public Task Deactivate()
+        public Task DeactivateAsync()
         {
             IsActive = false;
             return Task.CompletedTask;
@@ -40,6 +40,11 @@ namespace Tribitgroup.Framework.Identity.Shared.Entities.User
         {
             Deleted = false;
             return Task.CompletedTask;
+        }
+
+        public Task UndeleteAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
