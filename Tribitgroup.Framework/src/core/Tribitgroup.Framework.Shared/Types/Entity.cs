@@ -66,6 +66,9 @@ namespace Tribitgroup.Framework.Shared.Types
             }
         }
 
-        
+        public Task ValidateAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

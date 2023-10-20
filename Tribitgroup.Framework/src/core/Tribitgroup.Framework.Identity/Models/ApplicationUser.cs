@@ -31,5 +31,10 @@ namespace Tribitgroup.Framework.Identity.Models
         {
             return new List<string>();
         }
+
+        public Task ValidateAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

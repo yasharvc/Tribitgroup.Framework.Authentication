@@ -8,5 +8,6 @@ namespace Tribitgroup.Framework.Shared.Interfaces.Entity
         string GetTableName(DbContext? dbContext = null);
         object? GetValue(string propName);
         IEnumerable<string> GetColumnNames();
+        Task ValidateAsync();
     }
 }
