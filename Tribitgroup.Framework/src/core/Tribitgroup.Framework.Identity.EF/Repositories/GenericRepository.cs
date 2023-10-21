@@ -1,18 +1,93 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Tribitgroup.Framework.Identity.Shared.Entities;
+using Tribitgroup.Framework.Shared.Enums;
 using Tribitgroup.Framework.Shared.Extensions;
 using Tribitgroup.Framework.Shared.Interfaces;
+using Tribitgroup.Framework.Shared.Interfaces.Entity;
 using Tribitgroup.Framework.Shared.Types;
 
 namespace Tribitgroup.Framework.Identity.EF.Repositories
 {
+    public abstract class GenericRepository<TEntity, TDbContext, U>
+        : ICUDRepository<TEntity, U>//, IQueryRepository<T, U> 
+        where TEntity : class, IEntity<U>
+        where U : notnull
+        where TDbContext : DbContext
+    {
+        TDbContext DbContext { get; set; }
+        DbSet<TEntity> DbSet => DbContext.Set<TEntity>();
+
+        public GenericRepository(TDbContext dbContext) => DbContext = dbContext;
+
+        public async Task DeleteManyAsync(
+            IEnumerable<U> entities,
+            IUnitOfWorkHostInterface? unitOfWorkHost = null,
+            CancellationToken cancellationToken = default)
+                => await DoItWithUOWAsync(async (dbContext) =>
+                    {
+                        DbSet.RemoveRange(await GetItemsByIdsAsync(entities));
+                    }, unitOfWorkHost, cancellationToken);
+
+        public async Task DeleteOneAsync(U id, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default) 
+            => await DeleteManyAsync(new List<U> { id }, unitOfWorkHost, cancellationToken);
+
+        public async Task<IEnumerable<TEntity>> InsertManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default)
+        {
+            await DoItWithUOWAsync(async (ctx) =>
+            {
+                await DbContext.AddRangeAsync(entities, cancellationToken);
+            }, unitOfWorkHost, cancellationToken);
+            return entities;
+        }
+
+        public async Task<TEntity> InsertOneAsync(
+            TEntity entity, IUnitOfWorkHostInterface? unitOfWorkHost = null, 
+            CancellationToken cancellationToken = default) 
+            => (await InsertManyAsync(new List<TEntity> { entity }, unitOfWorkHost, cancellationToken)).First();
+
+        public Task<IEnumerable<TEntity>> UpdateManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default, Expression<Func<TEntity, object>>? includes = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TEntity> UpdateOneAsync(TEntity entity, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default, Expression<Func<TEntity, object>>? includes = null)
+            => (await UpdateManyAsync(new List<TEntity> { entity }, unitOfWorkHost, cancellationToken)).First();
+
+        private async Task DoItWithUOWAsync(
+            Func<TDbContext, Task> action,
+            IUnitOfWorkHostInterface? unitOfWorkHost, 
+            CancellationToken cancellationToken = default)
+        {
+            await ApplyUOW(unitOfWorkHost);
+            await action(DbContext);
+            await CommitAsync(unitOfWorkHost, cancellationToken);
+        }
+
+        private async Task CommitAsync(IUnitOfWorkHostInterface? unitOfWorkHost, CancellationToken cancellationToken = default)
+        {
+            if (unitOfWorkHost == null) return;
+            await DbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        private Task ApplyUOW(IUnitOfWorkHostInterface? uow)
+        {
+            if (uow == null) return Task.CompletedTask;
+            DbContext = uow.DbContext as TDbContext ?? throw new InvalidCastException(nameof(DbContext));
+            return Task.CompletedTask;
+        }
+
+        private async Task<IEnumerable<TEntity>> GetItemsByIdsAsync(IEnumerable<U> entities)
+        {
+            var res = DbContext.Set<TEntity>().Where(new Condition
+            {
+                Operator = ConditionOperatorEnum.In,
+                PropertyName = nameof(Entity.Id),
+                Values = entities.Select(m => m.ToString() ?? "").ToList(),
+            });
+
+            return await res.ToListAsync();
+        }
+    }
     //public abstract class GenericRepository<T, TDbContext, U>
     //    : ICUDRepository<T, U>, IQueryRepository<T, U> where T : class,
     //    IEntity<U>, new() where TDbContext : DbContext where U : struct
