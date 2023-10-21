@@ -21,7 +21,7 @@ namespace Tribitgroup.Framework.Dapper
         }
 
 
-        public async Task DeleteManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default)
+        public async Task DeleteManyAsync(IEnumerable<Guid> ids, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default)
         {
             var query = "";
             var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext);
@@ -30,7 +30,7 @@ namespace Tribitgroup.Framework.Dapper
                 query = $"delete from {tableName} where Id in (@Id)";
             else
                 query = $"update {tableName} set ${nameof(ILogicalDelete.Deleted)} = @value where Id in (@Id)";
-            await ExecuteAsync(unitOfWorkHost, query, new { id = entities.Select(m => m.Id) , value = true}, cancellationToken);
+            await ExecuteAsync(unitOfWorkHost, query, new { id = ids , value = true}, cancellationToken);
             
         }
 
