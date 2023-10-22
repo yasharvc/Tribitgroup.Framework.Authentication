@@ -1,16 +1,54 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using Numpy;
 using Python.Included;
 using Python.Runtime;
+using Tribitgroup.Framework.Shared.Interfaces.Entity.Validation;
 using Tribitgroup.Framework.Shared.Services;
 using Tribitgroup.Framework.Shared.Types;
 
 namespace ConsoleTestApp
 {
-    public class TestEntity : Entity
+    interface IFullName : IHasValidator
+    {
+        [FullNameValidator]
+        [MaxLengthOf(50)]
+        string FullName { get; }
+    }
+    class MaxLengthOfAttribute : Attribute, IValidator<IFullName>
+    {
+        int maxLength = 50;
+        public MaxLengthOfAttribute(int max)
+        {
+            maxLength = max;
+        }
+        public Task ValidateAsync(IFullName fullName)
+        {
+            var value = fullName.FullName;
+            if (string.IsNullOrEmpty(value)) throw new ArgumentNullException(nameof(IFullName.FullName));
+            if (value.Length > maxLength) throw new ArgumentOutOfRangeException(nameof(IFullName.FullName));
+            return Task.CompletedTask;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property,AllowMultiple = false)]
+    class FullNameValidatorAttribute : Attribute, IValidator<IFullName>
+    {
+        public Task ValidateAsync(IFullName fullName)
+        {
+            var value = fullName.FullName;
+            if (string.IsNullOrEmpty(value)) throw new ArgumentNullException(nameof(IFullName.FullName));
+            return Task.CompletedTask;
+        }
+    }
+
+
+    public class TestEntity : Entity, IFullName
         {
             public string FullName { get; set; } = string.Empty;
         }
@@ -19,6 +57,42 @@ namespace ConsoleTestApp
         
         static async Task Main(string[] args)
         {
+            var entityType = typeof(TestEntity);
+            var ff = new TestEntity { FullName = new string('a', 200) };
+
+            Type interfaceType = typeof(IValidator);
+            Type hasValidatorType = typeof(IHasValidator);
+            var validatorInterfaces = entityType.GetInterfaces();
+            var lst = validatorInterfaces.Where(m=>hasValidatorType.IsAssignableFrom(m) && m != hasValidatorType && m != entityType).ToList();
+            var properties = entityType.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+
+
+            //foreach ( var item in lst) 
+            //{
+            //    var interfaceProps = item.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+            //    foreach (var prop in interfaceProps)
+            //    {
+            //        var allAttrs = prop.GetCustomAttributes().Where(attr =>
+            //        attr.GetType().GetInterfaces().Select(m => m.Name).Contains(typeof(IValidator<>).Name)
+            //        ).Select(attr => attr as dynamic);
+
+            //        foreach (var attr in allAttrs)
+            //        {
+            //            if(attr != null)
+            //            await attr?.ValidateAsync(ff);
+            //        }
+            //    }
+                        
+            //}
+            await ff.ValidateAsync();
+
+            
+
+            //if (req != null)
+            //{
+            //    await req.ValidateAsync(ff.FullName);
+            //    await Console.Out.WriteLineAsync(prop.GetValue(ff)?.ToString() ?? "Error!");
+            //}
             await InMemoryCacheTestAsync();
         }
 

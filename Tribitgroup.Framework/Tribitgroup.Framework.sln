@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.DB.Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Identity.Web", "src\core\Tribitgroup.Framework.Identity.Web\Tribitgroup.Framework.Identity.Web.csproj", "{318F21E0-3241-4E78-904F-5C22C33FF925}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Dapper.Tests", "test\Tribitgroup.Framework.Dapper.Tests\Tribitgroup.Framework.Dapper.Tests.csproj", "{E138A7E2-8B5E-43D9-97EF-979326D95300}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Persistance.Tests", "test\Tribitgroup.Framework.Persistance.Tests\Tribitgroup.Framework.Persistance.Tests.csproj", "{E138A7E2-8B5E-43D9-97EF-979326D95300}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Identity.Shared.Tests", "test\Tribitgroup.Framework.Identity.Shared.Tests\Tribitgroup.Framework.Identity.Shared.Tests.csproj", "{76C3EC41-8454-45AB-AE0D-CD4E4F328F83}"
 EndProject
