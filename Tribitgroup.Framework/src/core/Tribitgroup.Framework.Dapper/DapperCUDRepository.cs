@@ -26,20 +26,20 @@ namespace Tribitgroup.Framework.Dapper
         public async Task DeleteManyAsync(IEnumerable<Guid> ids, IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null, CancellationToken cancellationToken = default)
         {
             var query = "";
-            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext);
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext);
 
             if (!IsLogicalDelete)
                 query = $"delete from {tableName} where Id in (@Id)";
             else
                 query = $"update {tableName} set ${nameof(ILogicalDelete.Deleted)} = @value where Id in (@Id)";
-            await ExecuteAsync(unitOfWorkHost, query, new { id = ids , value = true}, cancellationToken);
-            
+            await ExecuteAsync(unitOfWorkHost, query, new { id = ids, value = true }, cancellationToken);
+
         }
 
         public async Task DeleteOneAsync(Guid id, IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null, CancellationToken cancellationToken = default)
         {
             var query = "";
-            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext);
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext);
 
             if (!IsLogicalDelete)
                 query = $"delete from {tableName} where Id in (@Id)";
@@ -53,7 +53,7 @@ namespace Tribitgroup.Framework.Dapper
             var lst = new List<string>();
             var param = new Dictionary<string, object>();
             var cols = Sample.GetColumnNames();
-            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext ?? ConnectionProvider.DbContext);
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext ?? ConnectionProvider.DbContext);
             var columnNames = string.Join(", ", cols.Select(p => p));
             int index = 0;
 
@@ -85,8 +85,8 @@ namespace Tribitgroup.Framework.Dapper
             var lst = new List<string>();
             var param = new Dictionary<string, object>();
             var cols = Sample.GetColumnNames();
-            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext as DbContext ?? ConnectionProvider.DbContext);
-            
+            var tableName = Sample.GetTableName(unitOfWorkHost?.DbContext ?? ConnectionProvider.DbContext);
+
             int index = 0;
 
             foreach (var entity in entities)
