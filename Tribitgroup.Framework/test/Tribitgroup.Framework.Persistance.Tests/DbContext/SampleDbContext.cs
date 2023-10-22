@@ -2,7 +2,7 @@
 
 namespace Tribitgroup.Framework.Persistance.Tests.DbContext
 {
-    public class SampleDbContext : DbContext
+    public class SampleDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
         public DbSet<User> Users => Set<User>();
         public DbSet<Order> Orders => Set<Order>();

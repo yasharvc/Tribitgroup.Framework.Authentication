@@ -35,9 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Persi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Identity.Shared.Tests", "test\Tribitgroup.Framework.Identity.Shared.Tests\Tribitgroup.Framework.Identity.Shared.Tests.csproj", "{76C3EC41-8454-45AB-AE0D-CD4E4F328F83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framework.Identity.EF", "src\core\Tribitgroup.Framework.Identity.EF\Tribitgroup.Framework.Identity.EF.csproj", "{6EFB9C14-C77B-4F25-A30D-8EC1E48416F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Identity.EF", "src\core\Tribitgroup.Framework.Identity.EF\Tribitgroup.Framework.Identity.EF.csproj", "{6EFB9C14-C77B-4F25-A30D-8EC1E48416F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tribitgroup.Framework.Test.Helper", "src\core\Tribitgroup.Framework.Test.Helper\Tribitgroup.Framework.Test.Helper.csproj", "{8B2E84D4-2698-4BFA-A2FE-D28BE57744CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribitgroup.Framework.EF", "src\core\Tribitgroup.Framework.EF\Tribitgroup.Framework.EF.csproj", "{F2710BA1-F1A1-47F9-9452-B84ECE4108BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,10 @@ Global
 		{8B2E84D4-2698-4BFA-A2FE-D28BE57744CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B2E84D4-2698-4BFA-A2FE-D28BE57744CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B2E84D4-2698-4BFA-A2FE-D28BE57744CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2710BA1-F1A1-47F9-9452-B84ECE4108BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2710BA1-F1A1-47F9-9452-B84ECE4108BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2710BA1-F1A1-47F9-9452-B84ECE4108BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2710BA1-F1A1-47F9-9452-B84ECE4108BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{76C3EC41-8454-45AB-AE0D-CD4E4F328F83} = {18CC7602-5704-41A3-892B-CE6C4953522F}
 		{6EFB9C14-C77B-4F25-A30D-8EC1E48416F3} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
 		{8B2E84D4-2698-4BFA-A2FE-D28BE57744CA} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
+		{F2710BA1-F1A1-47F9-9452-B84ECE4108BE} = {04BDBA8D-826A-44F6-8E7E-68A253908FAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71091628-2E7E-4C66-8215-8DA5776EAA26}
