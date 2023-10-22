@@ -15,11 +15,11 @@ namespace Tribitgroup.Framework.Dapper.Tests
     public class DapperCUDRepositoryTests : BaseTestClass<SampleDbContext>
     {
         DapperCUDConnectionProvider<User> DapperRepoProvider { get; }
-        DapperCUDRepository<User> DapperUserCUDRepo { get; }
+        DapperCUDRepository<User, SampleDbContext> DapperUserCUDRepo { get; }
         public DapperCUDRepositoryTests() : base(nameof(SampleDbContext))
         {
             DapperRepoProvider = new DapperCUDConnectionProvider<User>(GetDbContext());
-            DapperUserCUDRepo = new DapperCUDRepository<User>(DapperRepoProvider);
+            DapperUserCUDRepo = new DapperCUDRepository<User, SampleDbContext>(DapperRepoProvider);
         }
 
 

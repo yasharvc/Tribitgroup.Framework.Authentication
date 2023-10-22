@@ -9,7 +9,7 @@ using Tribitgroup.Framework.Shared.Types;
 namespace Tribitgroup.Framework.Identity.EF.Repositories
 {
     public class GenericRepository<TEntity, TDbContext, U>
-        : ICUDRepository<TEntity, U>//, IQueryRepository<T, U> 
+        : ICUDRepository<TEntity, TDbContext, U>//, IQueryRepository<T, U> 
         where TEntity : class, IEntity<U>
         where U : notnull
         where TDbContext : DbContext
@@ -21,17 +21,17 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
 
         public async Task DeleteManyAsync(
             IEnumerable<U> entities,
-            IUnitOfWorkHostInterface? unitOfWorkHost = null,
+            IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null,
             CancellationToken cancellationToken = default)
                 => await DoItWithUOWAsync(async (dbContext) =>
                     {
                         DbSet.RemoveRange(await GetItemsByIdsAsync(entities));
                     }, unitOfWorkHost, cancellationToken);
 
-        public async Task DeleteOneAsync(U id, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default) 
+        public async Task DeleteOneAsync(U id, IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null, CancellationToken cancellationToken = default) 
             => await DeleteManyAsync(new List<U> { id }, unitOfWorkHost, cancellationToken);
 
-        public async Task<IEnumerable<TEntity>> InsertManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TEntity>> InsertManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null, CancellationToken cancellationToken = default)
         {
             await DoItWithUOWAsync(async (ctx) =>
             {
@@ -41,21 +41,21 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
         }
 
         public async Task<TEntity> InsertOneAsync(
-            TEntity entity, IUnitOfWorkHostInterface? unitOfWorkHost = null, 
+            TEntity entity, IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null, 
             CancellationToken cancellationToken = default) 
             => (await InsertManyAsync(new List<TEntity> { entity }, unitOfWorkHost, cancellationToken)).First();
 
-        public Task<IEnumerable<TEntity>> UpdateManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default, Expression<Func<TEntity, object>>? includes = null)
+        public Task<IEnumerable<TEntity>> UpdateManyAsync(IEnumerable<TEntity> entities, IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null, CancellationToken cancellationToken = default, Expression<Func<TEntity, object>>? includes = null)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<TEntity> UpdateOneAsync(TEntity entity, IUnitOfWorkHostInterface? unitOfWorkHost = null, CancellationToken cancellationToken = default, Expression<Func<TEntity, object>>? includes = null)
+        public async Task<TEntity> UpdateOneAsync(TEntity entity, IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null, CancellationToken cancellationToken = default, Expression<Func<TEntity, object>>? includes = null)
             => (await UpdateManyAsync(new List<TEntity> { entity }, unitOfWorkHost, cancellationToken)).First();
 
         private async Task DoItWithUOWAsync(
             Func<TDbContext, Task> action,
-            IUnitOfWorkHostInterface? unitOfWorkHost, 
+            IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost, 
             CancellationToken cancellationToken = default)
         {
             await ApplyUOW(unitOfWorkHost);
@@ -63,16 +63,15 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
             await CommitAsync(unitOfWorkHost, cancellationToken);
         }
 
-        private async Task CommitAsync(IUnitOfWorkHostInterface? unitOfWorkHost, CancellationToken cancellationToken = default)
+        private async Task CommitAsync(IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost, CancellationToken cancellationToken = default)
         {
-            if (unitOfWorkHost != null) return;
             await DbContext.SaveChangesAsync(cancellationToken);
         }
 
-        private Task ApplyUOW(IUnitOfWorkHostInterface? uow)
+        private Task ApplyUOW(IUnitOfWorkHostInterface<TDbContext>? uow)
         {
             if (uow == null) return Task.CompletedTask;
-            DbContext = uow.DbContext as TDbContext ?? throw new InvalidCastException(nameof(DbContext));
+            DbContext = uow.DbContext;
             return Task.CompletedTask;
         }
 
@@ -348,7 +347,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
 
     //    public virtual async Task<T> InsertOneAsync(
     //        T entity,
-    //        IUnitOfWorkHostInterface? unitOfWorkHost = null,
+    //        IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null,
     //        CancellationToken cancellationToken = default)
     //    {
     //        var ctx = GetContextWithUOW(unitOfWorkHost);
@@ -377,7 +376,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
 
     //    public virtual async Task<IEnumerable<T>> InsertManyAsync(
     //        IEnumerable<T> entities,
-    //        IUnitOfWorkHostInterface? unitOfWorkHost = null,
+    //        IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null,
     //        CancellationToken cancellationToken = default)
     //    {
     //        var ctx = GetContextWithUOW(unitOfWorkHost);
@@ -410,7 +409,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
 
     //    public virtual async Task<T> UpdateOneAsync(
     //        T entity,
-    //        IUnitOfWorkHostInterface? unitOfWorkHost = null,
+    //        IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null,
     //        CancellationToken cancellationToken = default,
     //         params Expression<Func<T, object>>[] includes)
     //    {
@@ -454,7 +453,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
 
     //    public virtual async Task<IEnumerable<T>> UpdateManyAsync(
     //        IEnumerable<T> entities,
-    //        IUnitOfWorkHostInterface? unitOfWorkHost = null,
+    //        IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null,
     //        Expression<Func<T, object>>? includes = null,
     //        CancellationToken cancellationToken = default)
     //    {
@@ -498,13 +497,13 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
 
     //    public virtual async Task DeleteOneAsync(
     //        T item,
-    //        IUnitOfWorkHostInterface? unitOfWorkHost = null,
+    //        IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null,
     //        CancellationToken cancellationToken = default) 
     //        => await DeleteManyAsync(new List<T> { item }, unitOfWorkHost, cancellationToken);
 
     //    public virtual async Task DeleteManyAsync(
     //        IEnumerable<T> entities,
-    //        IUnitOfWorkHostInterface? unitOfWorkHost = null,
+    //        IUnitOfWorkHostInterface<TDbContext>? unitOfWorkHost = null,
     //        CancellationToken cancellationToken = default)
     //    {
     //        var ctx = GetContextWithUOW(unitOfWorkHost);
@@ -633,7 +632,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
     //        }
     //    }
 
-    //    private TDbContext GetContextWithUOW(IUnitOfWorkHostInterface? uow)
+    //    private TDbContext GetContextWithUOW(IUnitOfWorkHostInterface<TDbContext>? uow)
     //        => uow == null || uow.DbContext == null ? GetContext() : uow.DbContext as TDbContext;
 
     //    private async Task<IQueryable<T>> ApplyTenantFilterAsync(IQueryable<T> query)
