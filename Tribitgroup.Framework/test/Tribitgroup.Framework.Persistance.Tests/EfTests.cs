@@ -14,16 +14,16 @@ namespace Tribitgroup.Framework.Dapper.Tests
 {
     public class EfTests : BaseTestClass<SampleDbContext>
     {
-        GenericRepository<User,SampleDbContext,Guid> repository;
+        EfCUDRepository<User,SampleDbContext,Guid> repository;
         public EfTests() : base(nameof(EfTests))
         {
-            repository = GetService<GenericRepository<User,SampleDbContext,Guid>>();
+            repository = GetService<EfCUDRepository<User,SampleDbContext,Guid>>();
         }
 
         protected override void AddServices(ServiceCollection services)
         {
             base.AddServices(services);
-            services.AddSingleton<GenericRepository<User, SampleDbContext, Guid>>();
+            services.AddSingleton<EfCUDRepository<User, SampleDbContext, Guid>>();
         }
 
         [Fact]
