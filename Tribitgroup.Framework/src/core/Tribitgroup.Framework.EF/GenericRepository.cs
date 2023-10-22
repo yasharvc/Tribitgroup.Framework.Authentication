@@ -8,7 +8,7 @@ using Tribitgroup.Framework.Shared.Types;
 
 namespace Tribitgroup.Framework.Identity.EF.Repositories
 {
-    public abstract class GenericRepository<TEntity, TDbContext, U>
+    public class GenericRepository<TEntity, TDbContext, U>
         : ICUDRepository<TEntity, U>//, IQueryRepository<T, U> 
         where TEntity : class, IEntity<U>
         where U : notnull
@@ -65,7 +65,7 @@ namespace Tribitgroup.Framework.Identity.EF.Repositories
 
         private async Task CommitAsync(IUnitOfWorkHostInterface? unitOfWorkHost, CancellationToken cancellationToken = default)
         {
-            if (unitOfWorkHost == null) return;
+            if (unitOfWorkHost != null) return;
             await DbContext.SaveChangesAsync(cancellationToken);
         }
 
