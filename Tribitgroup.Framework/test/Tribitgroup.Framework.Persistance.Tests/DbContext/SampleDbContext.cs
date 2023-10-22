@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Tribitgroup.Framework.Dapper.Tests
+namespace Tribitgroup.Framework.Persistance.Tests.DbContext
 {
     public class SampleDbContext : DbContext
     {

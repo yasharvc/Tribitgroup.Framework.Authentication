@@ -1,6 +1,6 @@
 ﻿using Tribitgroup.Framework.Shared.Types;
 
-namespace Tribitgroup.Framework.Dapper.Tests
+namespace Tribitgroup.Framework.Persistance.Tests.DbContext
 {
     public class User : AggregateRoot
     {
