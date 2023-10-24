@@ -1,4 +1,5 @@
-﻿using SequentialGuid;
+﻿using Newtonsoft.Json;
+using SequentialGuid;
 using System.Collections;
 
 namespace Tribitgroup.Framework.Shared.Extensions
@@ -128,5 +129,19 @@ namespace Tribitgroup.Framework.Shared.Extensions
         }
 
         public static Guid ToGuid(this DateTime date) => date.Ticks.ToGuid();
+
+        public static string ToJson(this object value) => JsonConvert.SerializeObject(value);
+        public static T? FromJson<T>(this string value) => JsonConvert.DeserializeObject<T>(value);
+
+        public static T? NewId<T>(T id)
+        {
+            if (typeof(T) != typeof(Guid) && id != null)
+                return id;
+            if (typeof(T) == typeof(Guid) && id?.ToString() != Guid.Empty.ToString())
+                return id;
+            if (typeof(T) == typeof(Guid))
+                return (T)Convert.ChangeType(GetSequentialGuid(), typeof(T));
+            return default;
+        }
     }
 }

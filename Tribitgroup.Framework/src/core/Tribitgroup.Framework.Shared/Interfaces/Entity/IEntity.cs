@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Tribitgroup.Framework.Shared.Interfaces
+namespace Tribitgroup.Framework.Shared.Interfaces.Entity
 {
     public interface IEntity<TIDType> where TIDType : notnull
     {
@@ -8,5 +8,6 @@ namespace Tribitgroup.Framework.Shared.Interfaces
         string GetTableName(DbContext? dbContext = null);
         object? GetValue(string propName);
         IEnumerable<string> GetColumnNames();
+        Task ValidateAsync();
     }
 }
