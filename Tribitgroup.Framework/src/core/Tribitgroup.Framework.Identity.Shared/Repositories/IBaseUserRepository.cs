@@ -1,4 +1,5 @@
-﻿using Tribitgroup.Framework.Identity.Shared.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Tribitgroup.Framework.Identity.Shared.Entities;
 using Tribitgroup.Framework.Identity.Shared.Entities.User;
 using Tribitgroup.Framework.Identity.Shared.Enums;
 using Tribitgroup.Framework.Shared.Interfaces;
@@ -6,8 +7,9 @@ using Tribitgroup.Framework.Shared.Interfaces.Entity;
 
 namespace Tribitgroup.Framework.Identity.Shared.Repositories
 {
-    public interface IBaseUserRepository<TUser> : ICUDRepository<TUser, Guid>, IQueryRepository<TUser, Guid>
+    public interface IBaseUserRepository<TUser, TDbContext> : ICUDRepository<TUser, TDbContext, Guid>, IQueryRepository<TUser, Guid>
         where TUser : BaseUser, IAggregateRoot
+        where TDbContext : DbContext
     {
         Task AddActivityLogAsync(TUser user, UserActivityEnum userActivity, string description, string? metadata = null);
 
