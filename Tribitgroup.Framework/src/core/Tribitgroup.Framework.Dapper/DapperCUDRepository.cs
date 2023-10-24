@@ -118,7 +118,7 @@ namespace Tribitgroup.Framework.Dapper
             IDbTransaction? tran = null;
             if (unitOfWorkHost != null)
             {
-                var ctx = (DbContext)unitOfWorkHost.DbContext;
+                var ctx = unitOfWorkHost.DbContext;
                 tran = ctx.Database.CurrentTransaction?.GetDbTransaction();
             }
             return new Tuple<IDbConnection, IDbTransaction?>(conn, tran);

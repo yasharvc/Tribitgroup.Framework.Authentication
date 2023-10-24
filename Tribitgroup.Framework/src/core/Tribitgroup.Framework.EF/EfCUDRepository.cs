@@ -9,7 +9,7 @@ using Tribitgroup.Framework.Shared.Types;
 namespace Tribitgroup.Framework.Identity.EF.Repositories
 {
     public class EfCUDRepository<TEntity, TDbContext, U>
-        : ICUDRepository<TEntity, TDbContext, U>//, IQueryRepository<T, U> 
+        : ICUDRepository<TEntity, TDbContext, U>
         where TEntity : class, IEntity<U>
         where U : notnull
         where TDbContext : DbContext
