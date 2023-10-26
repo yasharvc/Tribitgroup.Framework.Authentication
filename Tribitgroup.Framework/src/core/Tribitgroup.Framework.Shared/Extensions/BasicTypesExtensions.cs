@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
-using SequentialGuid;
 using System.Collections;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace Tribitgroup.Framework.Shared.Extensions
 {
@@ -142,6 +143,17 @@ namespace Tribitgroup.Framework.Shared.Extensions
             if (typeof(T) == typeof(Guid))
                 return (T)Convert.ChangeType(GetSequentialGuid(), typeof(T));
             return default;
+        }
+
+        public static string Description(this Enum @enum)
+        {
+            FieldInfo fi = @enum.GetType().GetField(@enum.ToString()) ?? throw new NullReferenceException();
+
+            DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(
+                typeof(DescriptionAttribute), false);
+
+            if (attributes != null && attributes.Length > 0) return attributes[0].Description;
+            else return @enum.ToString();
         }
     }
 }

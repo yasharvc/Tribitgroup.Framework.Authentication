@@ -1,10 +1,20 @@
-﻿using Shouldly;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
+using System.ComponentModel;
 using Tribitgroup.Framework.Identity.Shared.DomainServices;
 using Tribitgroup.Framework.Identity.Shared.Entities.User;
 using Tribitgroup.Framework.Shared.Extensions;
 
 namespace Tribitgroup.Framework.Identity.Shared.Tests.Entities
 {
+    [Flags]
+    public enum Test
+    {
+        [Description("First")]
+        One,
+        [Description("Second")]
+        Two,
+    }
     public class UserTokenTests
     {
         [Fact]
@@ -26,5 +36,15 @@ namespace Tribitgroup.Framework.Identity.Shared.Tests.Entities
             userToken.TokenHash.ShouldBe(token.ToSHA512());
             userToken.IsActive.ShouldBeTrue();
         }
+        [Fact]
+        public void Enum()
+        {
+            var enu = Test.Two;
+            enu.Description().ShouldBe("Second");
+        }
+        //TODO: Enum in select
+        //TODO: Translation of enum in select
+        //TODO: Where of translation in select
+
     }
 }
