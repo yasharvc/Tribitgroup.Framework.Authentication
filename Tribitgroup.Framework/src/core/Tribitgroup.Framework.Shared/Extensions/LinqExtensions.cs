@@ -317,7 +317,5 @@ namespace Tribitgroup.Framework.Shared.Extensions
             }
             return ((MemberExpression)unaryExpression.Operand).Member.Name;
         }
-
-
     }
 }
