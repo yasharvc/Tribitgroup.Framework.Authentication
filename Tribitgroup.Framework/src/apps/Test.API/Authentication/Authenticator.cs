@@ -1,8 +1,8 @@
-﻿using Test.API.Authentication.Interfaces;
+﻿using Test.API.Authentication.Contracts;
 
 namespace Test.API.Authentication
 {
-    public abstract class Authenticator<Tenant, Policy, Role, Permission>
+    public class Authenticator<Tenant, Policy, Role, Permission>
         where Role : IRole
         where Permission : IPermission
         where Tenant : ITenant

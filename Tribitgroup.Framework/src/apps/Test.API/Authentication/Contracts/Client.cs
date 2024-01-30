@@ -1,25 +1,7 @@
 ﻿using Test.API.Authentication.Enums;
 
-namespace Test.API.Authentication.Interfaces
+namespace Test.API.Authentication.Contracts
 {
-    public interface IClient<Tenant, Policy, Role, Permission> 
-        where Role : IRole
-        where Permission : IPermission
-        where Tenant : ITenant
-        where Policy : IPolicy
-    {
-        IEnumerable<Role> Roles { get; }
-        IEnumerable<Permission> Permissions { get; }
-        IEnumerable<Tenant> Tenants{ get; }
-        IEnumerable<Policy> Policies { get; }
-        string SessionId { get; }
-        string ApplicationToken { get; }//Machine to machine token
-        string TenantId { get; }
-        string ClientToken { get; }//User login token
-        string IP { get; }
-        DeviceTypeEnum DeviceType { get; }
-        string RequestedUrl { get; }
-    }
     public class Client<Tenant, Policy, Role, Permission> : IClient<Tenant, Policy, Role, Permission>
         where Role : IRole
         where Permission : IPermission
@@ -37,5 +19,6 @@ namespace Test.API.Authentication.Interfaces
         public string IP { get; set; } = string.Empty;
         public DeviceTypeEnum DeviceType { get; set; } = DeviceTypeEnum.Web;
         public string RequestedUrl { get; set; } = string.Empty;
+        public HttpCommandEnum HttpCommand { get; set; } = HttpCommandEnum.GET;
     }
 }

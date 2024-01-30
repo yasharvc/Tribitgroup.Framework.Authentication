@@ -1,4 +1,4 @@
-﻿namespace Test.API.Authentication.Interfaces
+﻿namespace Test.API.Authentication.Contracts
 {
     public interface ITenant
     {

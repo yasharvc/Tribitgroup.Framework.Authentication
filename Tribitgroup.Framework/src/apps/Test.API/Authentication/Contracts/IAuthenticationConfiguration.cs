@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Test.API.Authentication.Enums;
 
-namespace Test.API.Authentication.Interfaces
+namespace Test.API.Authentication.Contracts
 {
     public interface IAuthenticationConfiguration
     {
