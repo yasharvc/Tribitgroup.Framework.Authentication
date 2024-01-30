@@ -1,6 +1,6 @@
 ﻿namespace Test.API.Authentication.Interfaces
 {
-    internal interface IPreauthenticateStep<Tenant, Policy, Role, Permission>
+    public interface IPreauthenticatePipeStep<Tenant, Policy, Role, Permission>
         where Tenant : ITenant
         where Policy : IPolicy
         where Role : IRole
