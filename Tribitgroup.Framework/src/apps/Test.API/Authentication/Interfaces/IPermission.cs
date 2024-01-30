@@ -2,5 +2,6 @@
 {
     public interface IPermission
     {
+        string Name { get; }
     }
 }
