@@ -9,6 +9,6 @@ namespace Test.API.Authentication
         where Policy : IPolicy
     {
         IEnumerable<IPreauthenticate<Tenant, Policy, Role, Permission>> Preauthenticates { get; } = new List<IPreauthenticate<Tenant, Policy, Role, Permission>>();
-        IEnumerable<IAuthenticateStep<Tenant, Policy, Role, Permission>> AuthenticateSteps { get; } = new List<IAuthenticateStep<Tenant, Policy, Role, Permission>>();
+        IEnumerable<IPreauthenticateStep<Tenant, Policy, Role, Permission>> AuthenticateSteps { get; } = new List<IPreauthenticateStep<Tenant, Policy, Role, Permission>>();
     }
 }

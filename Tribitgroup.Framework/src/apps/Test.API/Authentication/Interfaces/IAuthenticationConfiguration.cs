@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Test.API.Authentication.Enums;
 
 namespace Test.API.Authentication.Interfaces
 {
@@ -12,12 +13,12 @@ namespace Test.API.Authentication.Interfaces
         IDictionary<string, string> URLPermission { get; } // <URL, Permission>
         IDictionary<string, string> URLPolicy { get; }
         IDictionary<string, string> URLTenant { get; }
-        // TODO: Mapper of DeviceType => URL {Make decision based on device type Android, iOS, Web, Windows, Linux, MacOs, ...}
-        // TODO: Mapper of SessionID => URL // Ban the session
-        // TODO: Overall status of authentication server : OK, Out of service
-        // TODO: Maximum number of sessions
-        // TODO: Maximum number of tokens
-        // TODO: Maximum number of devices
+        IDictionary<string, DeviceTypeEnum> URLDeviceType { get; }
+        IDictionary<string, string> URLSessionID { get; }
+        ServerStatusEnum ServerStatus { get; }
+        int MaxSessionsCount { get; }
+        int MaxTokensCount { get; }
+        int MaxDevicesCount { get; }
     }
 
     public class AuthenticationConfiguration : IAuthenticationConfiguration
@@ -31,5 +32,19 @@ namespace Test.API.Authentication.Interfaces
         private IDictionary<Regex, string> URLPermissionRegex => URLPermission.ToDictionary(x => new Regex(x.Key), x => x.Value);
         private Task<bool> HasUrlPermission(string url, IEnumerable<IPermission> permissions) => throw new NotImplementedException();
         public IDictionary<string, string> URLPolicy { get; set; } = new Dictionary<string, string>();
+
+        public IDictionary<string, string> URLTenant { get; set; } = new Dictionary<string, string>();
+
+        public IDictionary<string, DeviceTypeEnum> URLDeviceType { get; set; } = new Dictionary<string, DeviceTypeEnum>();
+
+        public IDictionary<string, string> URLSessionID { get; set; } = new Dictionary<string, string>();
+
+        public ServerStatusEnum ServerStatus {get; set; } = ServerStatusEnum.Available;
+
+        public int MaxSessionsCount { get; set; } = -1;
+
+        public int MaxTokensCount { get; set; } = -1;
+
+        public int MaxDevicesCount { get; set; } = -1;
     }
 }
