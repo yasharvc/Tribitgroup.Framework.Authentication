@@ -3,7 +3,7 @@ using Test.API.Authentication.Models;
 
 namespace Test.API.Authentication.Contracts
 {
-    public interface IClient<Tenant, Policy, Role, Permission> 
+    public interface IClient<Tenant, Policy, Role, Permission>
         where Role : IRole
         where Permission : IPermission
         where Tenant : ITenant
@@ -11,7 +11,7 @@ namespace Test.API.Authentication.Contracts
     {
         IEnumerable<Role> Roles { get; }
         IEnumerable<Permission> Permissions { get; }
-        IEnumerable<Tenant> Tenants{ get; }
+        IEnumerable<Tenant> Tenants { get; }
         IEnumerable<Policy> Policies { get; }
         string SessionId { get; }
         string ApplicationToken { get; }//Machine to machine token
@@ -29,8 +29,8 @@ namespace Test.API.Authentication.Contracts
         string Subdomain { get; }
         string Domain { get; }
         LocalizationInfo Localization { get; }
+        Dictionary<Policy, PolicyEvaluatorDelegate<Tenant, Policy, Role, Permission>> PolicyEvaluators { get; }
     }
-
     public class HttpClient<Tenant, Policy, Role, Permission> : Client<Tenant, Policy, Role, Permission>
         where Role : IRole
         where Permission : IPermission
