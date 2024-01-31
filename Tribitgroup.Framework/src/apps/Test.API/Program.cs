@@ -17,7 +17,6 @@ namespace Test.API
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             AddAuth(builder);
 
@@ -34,7 +33,7 @@ namespace Test.API
                 app.UseSwaggerUI();
             }
 
-            app.AddAuthentication();
+            app.UseAuthentication();
 
             app.MapPost("/", () =>
             {

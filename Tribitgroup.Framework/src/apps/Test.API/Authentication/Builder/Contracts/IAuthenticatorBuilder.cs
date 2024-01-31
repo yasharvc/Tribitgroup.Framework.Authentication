@@ -11,8 +11,8 @@ namespace Test.API.Authentication.Builder.Contracts
         Task<IAuthenticatorBuilder<Tenant, Policy, Role, Permission>>
             AddPreauthenticateStepAsync(params IPreauthenticatePipeStep<Tenant, Policy, Role, Permission>[] steps);
 
-        Task<IAuthenticatorBuilder<Tenant, Policy, Role, Permission>> 
-            AddPreauthenticateStepAsync<T>()
+        IAuthenticatorBuilder<Tenant, Policy, Role, Permission> 
+            AddPreauthenticateStep<T>()
             where T : IPreauthenticatePipeStep<Tenant, Policy, Role, Permission>;
 
         Task<IAuthenticatorBuilder<Tenant, Policy, Role, Permission>>
@@ -44,8 +44,8 @@ namespace Test.API.Authentication.Builder.Contracts
             Preauthenticates.AddRange(steps);
             return this;
         }
-        public async Task<IAuthenticatorBuilder<Tenant, Policy, Role, Permission>>
-            AddPreauthenticateStepAsync<T>()
+        public IAuthenticatorBuilder<Tenant, Policy, Role, Permission>
+            AddPreauthenticateStep<T>()
             where T : IPreauthenticatePipeStep<Tenant, Policy, Role, Permission>
         {
             Preauthenticates.Add(ServiceProvider.GetRequiredService<T>() ?? throw new Exception());

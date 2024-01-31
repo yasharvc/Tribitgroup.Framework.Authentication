@@ -6,7 +6,7 @@ namespace Test.API.Authentication.Extensions
 {
     public static class HttpExtension
     {
-        public static void AddAuthentication(this WebApplication app)
+        public static void UseAuthentication(this WebApplication app)
         {
             app.Use(async (ctx, next) => {
                 var client = new HttpClient<Tenant, Policy, Role, Permission>
@@ -29,11 +29,13 @@ namespace Test.API.Authentication.Extensions
         {
             using var scope = app.Services.CreateScope();
             var builder = new AuthenticatorBuilder<Tenant, Policy, Role, Permission>(scope.ServiceProvider);
-            await builder.AddPreauthenticateStepAsync<HttpCommandSetter>();
-            await builder.AddPreauthenticateStepAsync<DeviceTypeSetter>();
-            await builder.AddPreauthenticateStepAsync<TokenSetter>();
-            await builder.AddPreauthenticateStepAsync<IPSetter>();
-            await builder.AddPreauthenticateStepAsync<TokenHasher>();
+            
+            builder.AddPreauthenticateStep<HttpCommandSetter>()
+            .AddPreauthenticateStep<DeviceTypeSetter>()
+            .AddPreauthenticateStep<TokenSetter>()
+            .AddPreauthenticateStep<IPSetter>()
+            .AddPreauthenticateStep<TokenHasher>();
+
             return await builder.BuildAsync();
         }
     }
