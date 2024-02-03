@@ -3,8 +3,8 @@
     public interface ITenantProvider<Tenant> where Tenant : ITenant
     {
         Task<IEnumerable<Tenant>> GetAllAsync();
-        Task<Tenant> GetByIdAsync(Guid id);
-        Task<Tenant> GetByShortcutAsync(string shortcut);
+        Task<Tenant?> GetByIdAsync(Guid id);
+        Task<Tenant?> GetByShortcutAsync(string shortcut);
         Task<IEnumerable<Tenant>> GetChildrenAsync(params Guid[] ids);
         Task<IEnumerable<Tenant>> GetChildrenAsync(params string[] shortcuts);
 
