@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Numpy" Version="3.11.1.33" />
-    <PackageReference Include="Python.Included" Version="3.11.4" />
+    <PackageReference Include="Python.Included" Version="3.11.6" />
   </ItemGroup>
 
   <ItemGroup>
