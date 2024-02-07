@@ -2,7 +2,9 @@
 {
     public interface ITenant
     {
-        Guid Id { get; }
-        string Name { get; }
+        Guid Id { get; set; }
+        string Name { get; set; }
+        string Shortcut { get; set; }
+        string Path { get; set; }
     }
 }
