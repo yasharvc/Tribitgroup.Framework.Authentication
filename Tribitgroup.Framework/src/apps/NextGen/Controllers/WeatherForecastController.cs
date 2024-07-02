@@ -28,7 +28,7 @@ namespace NextGen.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
-            await _logger.WarningAsync((await domainBackbone.GetApplicationMode()).ToString(), ApplicationLayerEnum.Controller);
+            await _logger.WarningAsync($"{await domainBackbone.GetApplicationMode()}-{(await domainBackbone.GetCurrentUser<ApplicationUser>()).Name}" , ApplicationLayerEnum.Controller);
             var res = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

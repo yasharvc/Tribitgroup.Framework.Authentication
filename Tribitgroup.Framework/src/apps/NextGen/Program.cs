@@ -19,8 +19,8 @@ namespace NextGen
             builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<Backbone.Backbone.Contracts.ILogger, ConsoleLogger>();
 
-            builder.Services.AddScoped<IApplicationUser>(sp=> new ApplicationUser{ Name = $"Yashar {DateTime.Now.Millisecond}"});
-            builder.Services.AddScoped(sp => new ApplicationUser { Name = $"Yashar {DateTime.Now.Millisecond}" });
+            //builder.Services.AddScoped<IApplicationUser,ApplicationUser>();
+            builder.Services.AddScoped<ApplicationUser>();
 
             builder.Services.AddBackboneProvider<ApplicationUser>();
 
@@ -32,6 +32,16 @@ namespace NextGen
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.Use(async (ctx, next) =>
+            {
+                var user = ctx.RequestServices.GetRequiredService<ApplicationUser>();
+                if(ctx.Request.Query.ContainsKey("name"))
+                {
+                    user.SetName(ctx.Request.Query["name"]);
+                }
+                await next();
+            });
 
             app.UseBackbone();
 

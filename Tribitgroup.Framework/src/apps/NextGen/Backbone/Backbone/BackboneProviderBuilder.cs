@@ -9,13 +9,19 @@ namespace NextGen.Backbone.ServiceProvider
         public static IServiceCollection AddBackboneProvider<T>(this IServiceCollection services) where T : class, IApplicationUser
         {
             services.AddSingleton<ApplicationModeProvider>();
+            services.AddHttpContextAccessor();
             services.AddScoped<IBackboneProvider>(sp =>
             {
+                var ctx = sp.GetRequiredService<IHttpContextAccessor>().HttpContext;
+                var serviceProvider = ctx.RequestServices;
                 var res = new BackboneProvider
                 (
-                    sp.GetRequiredService<T>(),
-                    sp,
-                    sp.GetRequiredService<ApplicationModeProvider>()
+                    //ctx.RequestServices.GetService<T>(),
+                    //sp.CreateScope().ServiceProvider.GetRequiredService<T>(),
+                    ctx.RequestServices.GetRequiredService<T>(),
+                    serviceProvider,
+                    serviceProvider.GetRequiredService<ApplicationModeProvider>()
+                    //sp.GetRequiredService<ApplicationModeProvider>()
                 );
 
                 return res;
