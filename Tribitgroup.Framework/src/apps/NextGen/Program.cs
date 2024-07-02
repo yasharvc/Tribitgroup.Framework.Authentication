@@ -1,4 +1,8 @@
 
+using NextGen.Backbone.Backbone.Contracts;
+using NextGen.Backbone.ServiceProvider;
+using NextGen.Backbone.ServiceProvider.Contracts;
+
 namespace NextGen
 {
     public class Program
@@ -13,6 +17,12 @@ namespace NextGen
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSingleton<Backbone.Backbone.Contracts.ILogger, ConsoleLogger>();
+
+            builder.Services.AddScoped<IApplicationUser>(sp=> new ApplicationUser{ Name = $"Yashar {DateTime.Now.Millisecond}"});
+            builder.Services.AddScoped(sp => new ApplicationUser { Name = $"Yashar {DateTime.Now.Millisecond}" });
+
+            builder.Services.AddBackboneProvider<ApplicationUser>();
 
             var app = builder.Build();
 
@@ -23,12 +33,14 @@ namespace NextGen
                 app.UseSwaggerUI();
             }
 
-            app.UseAuthorization();
+            app.UseBackbone();
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
             app.Run();
         }
+
     }
 }

@@ -5,6 +5,7 @@ namespace NextGen.Backbone.Backbone
 {
     internal class BackboneProvider : IBackboneProvider
     {
+        private readonly ApplicationModeProvider _applicationModeProvider;
 
         public Dictionary<string, IDBConnectionProvider> DbConnectionProvider { get; } = [];
 
@@ -13,21 +14,22 @@ namespace NextGen.Backbone.Backbone
         public string TrackingID { get; set; } = string.Empty;
 
         public event EventHandler<ApplicationModeEnum> ApplicationModeChanged = delegate { };
-        protected ApplicationModeEnum ApplicationMode { get; set; } = ApplicationModeEnum.Running;
         protected Dictionary<Type, IConfiguration> Configurations { get; set; } = [];
         protected IApplicationUser ApplicationUser { get; set; } = null!;
         public IServiceProvider ServiceProvider { get; }
 
         public BackboneProvider(
             IApplicationUser applicationUser,
-            IServiceProvider serviceProvider
+            IServiceProvider serviceProvider,
+            ApplicationModeProvider applicationModeProvider
             )
         {
             ApplicationUser = applicationUser;
             ServiceProvider = serviceProvider;
+            _applicationModeProvider = applicationModeProvider;
         }
 
-        public Task<ApplicationModeEnum> GetApplicationMode() => Task.FromResult(ApplicationMode);
+        public Task<ApplicationModeEnum> GetApplicationMode() => Task.FromResult(_applicationModeProvider.ApplicationMode);
 
         public Task<T> GetConfiguration<T>() where T : IApplicationConfiguration 
             => Task.FromResult((T)Configurations[typeof(T)]);
@@ -43,9 +45,19 @@ namespace NextGen.Backbone.Backbone
 
         public Task OnApplicationModeChanged(ApplicationModeEnum newApplicationMode)
         {
-            ApplicationMode = newApplicationMode;
+            _applicationModeProvider.SetApplicationMode(newApplicationMode);
             return Task.CompletedTask;
         }
 
+    }
+
+    public class ApplicationModeProvider
+    {
+        public ApplicationModeEnum ApplicationMode { get; set; } = ApplicationModeEnum.Running;
+
+        public void SetApplicationMode(ApplicationModeEnum applicationMode)
+        {
+            ApplicationMode = applicationMode;
+        }
     }
 }

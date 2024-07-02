@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using NextGen.Backbone.Backbone.Contracts;
+using NextGen.Backbone.ServiceProvider.Contracts;
 
 namespace NextGen.Controllers
 {
@@ -11,23 +13,31 @@ namespace NextGen.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly Backbone.Backbone.Contracts.ILogger _logger;
+        private readonly IBackboneProvider domainBackbone;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(
+            IBackboneProvider backboneProvider,
+            Backbone.Backbone.Contracts.ILogger logger
+            )
         {
             _logger = logger;
+            domainBackbone = backboneProvider;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IEnumerable<WeatherForecast>> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            await _logger.WarningAsync((await domainBackbone.GetApplicationMode()).ToString(), ApplicationLayerEnum.Controller);
+            var res = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+
+            return res;
         }
     }
 }
